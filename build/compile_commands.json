@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/home/bogdan/Documents/Lizon/build",
+  "command": "/usr/bin/g++ -DWXUSINGDLL -D_FILE_OFFSET_BITS=64 -D__WXGTK__ -isystem /usr/lib/x86_64-linux-gnu/wx/include/gtk3-unicode-3.2 -isystem /usr/include/wx-3.2  -pthread -g -o CMakeFiles/MyWxApp.dir/main.cpp.o -c /home/bogdan/Documents/Lizon/main.cpp",
+  "file": "/home/bogdan/Documents/Lizon/main.cpp",
+  "output": "CMakeFiles/MyWxApp.dir/main.cpp.o"
+}
+]
