@@ -1,3 +1,0 @@
-/home/bogdan/Documents/Lizon/build/CMakeFiles/Lizon.dir
-/home/bogdan/Documents/Lizon/build/CMakeFiles/edit_cache.dir
-/home/bogdan/Documents/Lizon/build/CMakeFiles/rebuild_cache.dir

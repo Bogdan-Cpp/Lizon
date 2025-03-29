@@ -1,1 +1,0 @@
-/usr/bin/g++  -pthread -g CMakeFiles/MyWxApp.dir/text.cpp.o CMakeFiles/MyWxApp.dir/main.cpp.o -o MyWxApp  -L/usr/lib/x86_64-linux-gnu -pthread -lwx_gtk3u_core-3.2 -lwx_baseu-3.2 
