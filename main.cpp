@@ -10,8 +10,12 @@ class Text : public wxPanel{
 
     void textDraw(wxPaintEvent &event){
         wxPaintDC text1(this);
-        
-        text1.DrawText("Lizon is a powerful settings app", wxPoint((size_x / 2) - 100.f, size_y / 2));
+
+        wxSize size = GetParent()->GetSize();
+        size_x = size.GetWidth();
+        size_y = size.GetHeight();
+
+        text1.DrawText("Lizon is a settings app made for Linux", wxPoint((size_x / 2) - 100.f, size_y / 2));
     }
 
     wxDECLARE_EVENT_TABLE();
@@ -26,7 +30,7 @@ public:
     virtual bool OnInit() {
         wxFrame* frame = new wxFrame(nullptr, wxID_ANY, "Lizon", wxDefaultPosition, wxSize(size_x, size_y));
         Text *panel = new Text(frame);
-        
+
         frame->Show();
         return true;
     }
