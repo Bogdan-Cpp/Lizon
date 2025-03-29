@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "MyWxApp"
+			"path" : "Lizon"
 		}
 	],
 	"backtrace" : 1,
@@ -102,11 +102,12 @@
 			"language" : "CXX",
 			"sourceIndexes" : 
 			[
-				0
+				0,
+				1
 			]
 		}
 	],
-	"id" : "MyWxApp::@6890427a1f51a3e7e1df",
+	"id" : "Lizon::@6890427a1f51a3e7e1df",
 	"link" : 
 	{
 		"commandFragments" : 
@@ -142,8 +143,8 @@
 		],
 		"language" : "CXX"
 	},
-	"name" : "MyWxApp",
-	"nameOnDisk" : "MyWxApp",
+	"name" : "Lizon",
+	"nameOnDisk" : "Lizon",
 	"paths" : 
 	{
 		"build" : ".",
@@ -155,12 +156,19 @@
 			"name" : "Source Files",
 			"sourceIndexes" : 
 			[
-				0
+				0,
+				1
 			]
 		}
 	],
 	"sources" : 
 	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "text.cpp",
+			"sourceGroupIndex" : 0
+		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,

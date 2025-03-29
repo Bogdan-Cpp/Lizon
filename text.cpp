@@ -1,18 +1,20 @@
 #include <wx/wx.h>
 #include <iostream>
+#include "text.h"
+#include "main.h"
 
-class Text : public wxPanel{
-    public:
-    Text(wxFrame *parent) : wxPanel(parent, wxID_ANY) {
-        wxButton *button = new wxButton(this, wxID_ANY, "Subscribe", wxPoint(500, 10));
-    }
+Text::Text(wxFrame *parent) : wxPanel(parent, wxID_ANY) {}
+    
+void Text::textDraw(wxPaintEvent &event){
+    wxPaintDC text1(this);
+    
+    wxSize size = GetParent()->GetSize();
+    size_x = size.GetWidth();
+    size_y = size.GetHeight();
 
-    void textDraw(wxPaintEvent &event){
-        wxPaintDC text1(this);
-        
-        text1.DrawText("Hello, world!", wxPoint(100, 100));
-        text1.DrawText("Aplicatie", wxPoint(50, 10));
-    }
+    text1.DrawText("Lizon is a settings app made for Linux", wxPoint((size_x / 2) - 110, size_y / 2));
+}
 
-    wxDECLARE_EVENT_TABLE();
-};
+wxBEGIN_EVENT_TABLE(Text, wxPanel)
+    EVT_PAINT(Text::textDraw)
+wxEND_EVENT_TABLE()

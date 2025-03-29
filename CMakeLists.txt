@@ -5,6 +5,6 @@ find_package(wxWidgets REQUIRED COMPONENTS core base)
 
 include(${wxWidgets_USE_FILE})
 
-add_executable(MyWxApp main.cpp)
+add_executable(Lizon text.cpp main.cpp)
 
-target_link_libraries(MyWxApp ${wxWidgets_LIBRARIES})
+target_link_libraries(Lizon ${wxWidgets_LIBRARIES})

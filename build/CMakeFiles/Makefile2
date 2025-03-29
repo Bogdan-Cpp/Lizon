@@ -63,7 +63,7 @@ CMAKE_BINARY_DIR = /home/bogdan/Documents/Lizon/build
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/MyWxApp.dir/all
+all: CMakeFiles/Lizon.dir/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
@@ -71,34 +71,34 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/MyWxApp.dir/clean
+clean: CMakeFiles/Lizon.dir/clean
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/MyWxApp.dir
+# Target rules for target CMakeFiles/Lizon.dir
 
 # All Build rule for target.
-CMakeFiles/MyWxApp.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyWxApp.dir/build.make CMakeFiles/MyWxApp.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyWxApp.dir/build.make CMakeFiles/MyWxApp.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/bogdan/Documents/Lizon/build/CMakeFiles --progress-num=1,2 "Built target MyWxApp"
-.PHONY : CMakeFiles/MyWxApp.dir/all
+CMakeFiles/Lizon.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lizon.dir/build.make CMakeFiles/Lizon.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lizon.dir/build.make CMakeFiles/Lizon.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/bogdan/Documents/Lizon/build/CMakeFiles --progress-num=1,2,3 "Built target Lizon"
+.PHONY : CMakeFiles/Lizon.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/MyWxApp.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/bogdan/Documents/Lizon/build/CMakeFiles 2
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/MyWxApp.dir/all
+CMakeFiles/Lizon.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/bogdan/Documents/Lizon/build/CMakeFiles 3
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/Lizon.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/bogdan/Documents/Lizon/build/CMakeFiles 0
-.PHONY : CMakeFiles/MyWxApp.dir/rule
+.PHONY : CMakeFiles/Lizon.dir/rule
 
 # Convenience name for target.
-MyWxApp: CMakeFiles/MyWxApp.dir/rule
-.PHONY : MyWxApp
+Lizon: CMakeFiles/Lizon.dir/rule
+.PHONY : Lizon
 
 # clean rule for target.
-CMakeFiles/MyWxApp.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyWxApp.dir/build.make CMakeFiles/MyWxApp.dir/clean
-.PHONY : CMakeFiles/MyWxApp.dir/clean
+CMakeFiles/Lizon.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lizon.dir/build.make CMakeFiles/Lizon.dir/clean
+.PHONY : CMakeFiles/Lizon.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

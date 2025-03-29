@@ -8,8 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/bogdan/Documents/Lizon/main.cpp" "CMakeFiles/MyWxApp.dir/main.cpp.o" "gcc" "CMakeFiles/MyWxApp.dir/main.cpp.o.d"
-  "/home/bogdan/Documents/Lizon/text.cpp" "CMakeFiles/MyWxApp.dir/text.cpp.o" "gcc" "CMakeFiles/MyWxApp.dir/text.cpp.o.d"
+  "/home/bogdan/Documents/Lizon/main.cpp" "CMakeFiles/Lizon.dir/main.cpp.o" "gcc" "CMakeFiles/Lizon.dir/main.cpp.o.d"
+  "/home/bogdan/Documents/Lizon/text.cpp" "CMakeFiles/Lizon.dir/text.cpp.o" "gcc" "CMakeFiles/Lizon.dir/text.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

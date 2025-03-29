@@ -1,4 +1,4 @@
-CMakeFiles/MyWxApp.dir/main.cpp.o: /home/bogdan/Documents/Lizon/main.cpp \
+CMakeFiles/Lizon.dir/main.cpp.o: /home/bogdan/Documents/Lizon/main.cpp \
  /usr/include/stdc-predef.h /usr/include/wx-3.2/wx/wx.h \
  /usr/include/wx-3.2/wx/defs.h /usr/include/wx-3.2/wx/platform.h \
  /usr/include/wx-3.2/wx/compiler.h \

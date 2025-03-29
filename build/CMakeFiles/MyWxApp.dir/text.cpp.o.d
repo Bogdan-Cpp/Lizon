@@ -1,4 +1,4 @@
-CMakeFiles/MyWxApp.dir/main.cpp.o: /home/bogdan/Documents/Lizon/main.cpp \
+CMakeFiles/MyWxApp.dir/text.cpp.o: /home/bogdan/Documents/Lizon/text.cpp \
  /usr/include/stdc-predef.h /usr/include/wx-3.2/wx/wx.h \
  /usr/include/wx-3.2/wx/defs.h /usr/include/wx-3.2/wx/platform.h \
  /usr/include/wx-3.2/wx/compiler.h \
@@ -380,4 +380,4 @@ CMakeFiles/MyWxApp.dir/main.cpp.o: /home/bogdan/Documents/Lizon/main.cpp \
  /usr/include/wx-3.2/wx/gtk/filedlg.h \
  /usr/include/wx-3.2/wx/gtk/filectrl.h /usr/include/wx-3.2/wx/filectrl.h \
  /usr/include/wx-3.2/wx/mdi.h /usr/include/wx-3.2/wx/gtk/mdi.h \
- /home/bogdan/Documents/Lizon/main.h /home/bogdan/Documents/Lizon/text.h
+ /home/bogdan/Documents/Lizon/text.h /home/bogdan/Documents/Lizon/main.h
