@@ -1,5 +1,6 @@
 #include <wx/wx.h>
 #include <iostream>
+#include <cstdlib>
 #include "main.h"
 #include "mframe.h"
 
