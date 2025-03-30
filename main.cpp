@@ -4,7 +4,7 @@
 #include "main.h"
 #include "mframe.h"
 
-float size_x = 1300.f;
+float size_x = 600;
 float size_y = 750.f;
 
 bool Main::OnInit() {

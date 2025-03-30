@@ -4,13 +4,14 @@
 #include <wx/wx.h>
 #include <cstdlib>
 
-extern std::string msg;
+extern bool isKeyOff;
 
 class mainFrame : public wxFrame{
     public:
+    wxTextCtrl* commandLine;
     mainFrame(const wxString& title);
 
-    private:
+    void readInput(wxCommandEvent& event);
     void isKeyboardOff(wxCommandEvent& event);
 };
 
