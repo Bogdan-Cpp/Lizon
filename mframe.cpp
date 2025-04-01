@@ -5,12 +5,16 @@
 #include <wx/statbmp.h>
 #include <iostream>
 #include <cstdlib>
+#include <cstdio>
+#include <memory>
 #include "mframe.h"
 #include "main.h"
 
 bool isKeyOff = false;
 int timeSpent = 0;
+int timeSpent2 = 0;
 int minutes = 0;
+int minutes2 = 0;
 
 mainFrame::mainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxSize(size_x, size_y), wxDEFAULT_FRAME_STYLE & ~(wxRESIZE_BORDER | wxMAXIMIZE_BOX)){
     SetBackgroundColour(wxColour(30, 30, 30));
@@ -26,13 +30,19 @@ mainFrame::mainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, 
         wxBitmap bitmap(vsIcon);
         wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(50, 600), wxSize(wxDefaultSize));
     }
-    else{
-        return;
+
+    wxImage konsole;
+    if(konsole.LoadFile("../konsole.png")){
+        wxImage scaledImage = konsole.Rescale(70, 70, wxIMAGE_QUALITY_HIGH);
+        wxBitmap bitmap(konsole);
+        wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(50, 500), wxSize(wxDefaultSize));
     }
 
     //time track
-    std::cout << timeSpent << '\n';
-    timerText = new wxStaticText(panel, wxID_ANY, wxString::Format("%d s", timeSpent), wxPoint(150, 630));
+    timerText = new wxStaticText(panel, wxID_ANY, wxString::Format("%d m in VSCode", timeSpent), wxPoint(150, 630));
+    timerText2 = new wxStaticText(panel, wxID_ANY, wxString::Format("%d m in Konsole", timeSpent2), wxPoint(150, 530));
+
+    cpuTemperature = new wxStaticText(panel, wxID_ANY, wxString::Format("CPU temp %s", cpuTemp), wxPoint(150, 400));
     timer.SetOwner(this);
     Bind(wxEVT_TIMER, &mainFrame::OnTimer, this);
     timer.Start(1000);
@@ -84,8 +94,25 @@ void mainFrame::isKeyboardOff(wxCommandEvent& event){
 }
 
 void mainFrame::OnTimer(wxTimerEvent& event) {
+    const char *cmd = "sensors | grep 'Core 0' | awk '{print $3}' | tr -d '+°C'";
     const char *command = "xdotool search --name \"Visual Studio Code\"";
+    const char *command2 = "xdotool search --name \"Konsole\"";
     int rezults = system(command);
+    int rezults2 = system(command2);
+    char read[128];
+
+    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
+    if(!pipe) {
+        return;
+    }
+
+    while(fgets(read, sizeof(read), pipe.get()) != nullptr) {
+        cpuTemp += read;
+    }
+    if(cpuTemperature != nullptr){
+        cpuTemperature->SetLabel(wxString::Format("CPU temp: %s", cpuTemp));
+        cpuTemp = "";
+    }
     
     if(rezults == 0){
         if(timeSpent == 60){
@@ -94,14 +121,27 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
         }
         timeSpent += 1;
         if(timerText != nullptr){
-            timerText->SetLabel(wxString::Format("%d m", minutes));
+            timerText->SetLabel(wxString::Format("%d m in VSCode", minutes));
             std::cout << timeSpent << '\n';
         }
         else{
             std::cerr << "erroare" << '\n';
         }
     }
-    else{
-        std::cout << "nu merge";
+    else{std::cout << "nu merge";}
+
+    if(rezults2 == 0){
+        if(timeSpent2 == 60){
+            minutes2 += 1;
+            timeSpent2 = 0;
+        }
+        timeSpent2 += 1;
+        if(timerText2 != nullptr){
+            timerText2->SetLabel(wxString::Format("%d m in Konsole", minutes2));
+            std::cout << timeSpent2 << '\n';
+        }
+        else{
+            std::cerr << "erroare" << '\n';
+        }
     }
 }
