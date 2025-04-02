@@ -13,11 +13,16 @@ extern int minutes2;
 class mainFrame : public wxFrame{
     public:
     wxTextCtrl* commandLine;
-    wxStaticText* timerText;
-    wxStaticText* timerText2;
-    wxStaticText* cpuTemperature;
+    wxStaticText *timerText;
+    wxStaticText *timerText2;
+    wxStaticText *cpuTemperature;
+    wxStaticText *cpu_usage;
+    wxStaticText *ram_usage;
     wxTimer timer;
     wxString cpuTemp;
+    wxString CPU;
+    wxString RAM;
+    
     mainFrame(const wxString& title);
 
     void readInput(wxCommandEvent& event);

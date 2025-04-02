@@ -6,6 +6,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstdio>
+#include <unordered_map>
 #include <memory>
 #include "mframe.h"
 #include "main.h"
@@ -43,6 +44,8 @@ mainFrame::mainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, 
     timerText2 = new wxStaticText(panel, wxID_ANY, wxString::Format("%d m in Konsole", timeSpent2), wxPoint(150, 530));
 
     cpuTemperature = new wxStaticText(panel, wxID_ANY, wxString::Format("CPU temp %s", cpuTemp), wxPoint(150, 400));
+    ram_usage = new wxStaticText(panel, wxID_ANY, wxString::Format("RAM usage: %s", RAM), wxPoint(150, 300));
+    cpu_usage = new wxStaticText(panel, wxID_ANY, wxString::Format("CPU usage: %s", CPU), wxPoint(150, 250));
     timer.SetOwner(this);
     Bind(wxEVT_TIMER, &mainFrame::OnTimer, this);
     timer.Start(1000);
@@ -94,26 +97,46 @@ void mainFrame::isKeyboardOff(wxCommandEvent& event){
 }
 
 void mainFrame::OnTimer(wxTimerEvent& event) {
-    const char *cmd = "sensors | grep 'Core 0' | awk '{print $3}' | tr -d '+°C'";
+    const char *cmd_cpu_temp = "sensors | grep 'Core 0' | awk '{print $3}' | tr -d '+°C'";
+    const char *cmd_cpu = "top -bn1 | grep \"Cpu(s)\" | awk '{print $2 + $4}'";
+    const char *cmd_ram = "free -h | awk '/Mem:/ {print $3}'";
     const char *command = "xdotool search --name \"Visual Studio Code\"";
     const char *command2 = "xdotool search --name \"Konsole\"";
     int rezults = system(command);
     int rezults2 = system(command2);
-    char read[128];
+    char read_cpu_temp[128];
+    char read_cpu[128];
+    char read_ram[128];
+    //reda RAM usage 
+    std::unique_ptr<FILE, decltype(&pclose)> pipe3(popen(cmd_ram, "r"), pclose); 
 
-    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
-    if(!pipe) {
+    //read CPU usage
+    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd_cpu, "r"), pclose);
+    if(!pipe){
         return;
     }
+    while(fgets(read_cpu, sizeof(read_cpu), pipe.get()) != nullptr){
+        CPU += read_cpu;
+    }
+    if(cpu_usage != nullptr){
+        cpu_usage->SetLabel(wxString::Format("CPU usage: %s", CPU));
+        CPU = "";
+    }
 
-    while(fgets(read, sizeof(read), pipe.get()) != nullptr) {
-        cpuTemp += read;
+    //read the temperature
+    std::unique_ptr<FILE, decltype(&pclose)> pipe2(popen(cmd_cpu_temp, "r"), pclose);
+    if(!pipe2) {
+        return;
+    }
+    while(fgets(read_cpu_temp, sizeof(read_cpu_temp), pipe2.get()) != nullptr) {
+        cpuTemp += read_cpu_temp;
     }
     if(cpuTemperature != nullptr){
         cpuTemperature->SetLabel(wxString::Format("CPU temp: %s", cpuTemp));
         cpuTemp = "";
     }
     
+    //vs code timespent
     if(rezults == 0){
         if(timeSpent == 60){
             minutes += 1;
@@ -130,6 +153,7 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
     }
     else{std::cout << "nu merge";}
 
+    //konsole timespent
     if(rezults2 == 0){
         if(timeSpent2 == 60){
             minutes2 += 1;
