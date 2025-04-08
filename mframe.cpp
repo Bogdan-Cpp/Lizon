@@ -22,6 +22,7 @@ mainFrame::mainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, 
     SetTransparent(230);
     
     wxPanel *panel = new wxPanel(this, wxID_ANY);
+
     wxInitAllImageHandlers();
     
     //imagini
@@ -63,7 +64,28 @@ mainFrame::mainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, 
     keyboard->Bind(wxEVT_CHECKBOX, &mainFrame::isKeyboardOff, this);
     
     commandLine->Bind(wxEVT_TEXT_ENTER, &mainFrame::readInput, this);
+
+    cpu_draw = new wxPanel(panel, wxID_ANY, wxPoint(250, 250), wxSize(300, 20));
+    cpu_draw->SetBackgroundColour(wxColour(30, 30, 50));
+    cpu_draw->Bind(wxEVT_PAINT, &mainFrame::draw, this);
 }
+
+void mainFrame::draw(wxPaintEvent &event){
+    wxPaintDC dc(cpu_draw);
+    dc.SetPen(*wxWHITE_PEN);
+    dc.SetBrush(*wxTRANSPARENT_BRUSH);
+    double cpu_value;
+    if(remember_CPU.ToDouble(&cpu_value)){
+        std::cout << "succes\n";
+    }
+    else{
+        std::cout << "esuat\n";
+    }
+    dc.DrawRectangle(0, 0, cpu_value * 3, 20);
+    temp += 10;
+    std::cout << temp << '\n';
+}
+
 void mainFrame::readInput(wxCommandEvent& event){
     wxString input = commandLine->GetValue();
     if(input == "touchpad off"){
@@ -107,8 +129,19 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
     char read_cpu_temp[128];
     char read_cpu[128];
     char read_ram[128];
+
     //reda RAM usage 
     std::unique_ptr<FILE, decltype(&pclose)> pipe3(popen(cmd_ram, "r"), pclose); 
+    if(!pipe3){
+        return;
+    }
+    while(fgets(read_ram, sizeof(read_ram), pipe3.get()) != nullptr){
+        RAM += read_ram;
+    }
+    if(ram_usage != nullptr){
+        ram_usage->SetLabel(wxString::Format("CPU usage: %s", RAM));
+        RAM = "";
+    }
 
     //read CPU usage
     std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd_cpu, "r"), pclose);
@@ -120,6 +153,7 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
     }
     if(cpu_usage != nullptr){
         cpu_usage->SetLabel(wxString::Format("CPU usage: %s", CPU));
+        remember_CPU = CPU;
         CPU = "";
     }
 
@@ -145,7 +179,6 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
         timeSpent += 1;
         if(timerText != nullptr){
             timerText->SetLabel(wxString::Format("%d m in VSCode", minutes));
-            std::cout << timeSpent << '\n';
         }
         else{
             std::cerr << "erroare" << '\n';
@@ -162,10 +195,10 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
         timeSpent2 += 1;
         if(timerText2 != nullptr){
             timerText2->SetLabel(wxString::Format("%d m in Konsole", minutes2));
-            std::cout << timeSpent2 << '\n';
         }
         else{
             std::cerr << "erroare" << '\n';
         }
     }
+    cpu_draw->Refresh();
 }
