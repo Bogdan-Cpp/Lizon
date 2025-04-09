@@ -28,77 +28,123 @@ mainFrame::mainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, 
     //imagini
     wxImage vsIcon;
     if(vsIcon.LoadFile("../vscode.png")){
-        wxImage scaledImage = vsIcon.Rescale(70, 70, wxIMAGE_QUALITY_HIGH);
+        wxImage scaledImage = vsIcon.Rescale(25, 25, wxIMAGE_QUALITY_HIGH);
         wxBitmap bitmap(vsIcon);
-        wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(50, 600), wxSize(wxDefaultSize));
+        wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(10, 240), wxSize(wxDefaultSize));
     }
 
     wxImage konsole;
     if(konsole.LoadFile("../konsole.png")){
-        wxImage scaledImage = konsole.Rescale(70, 70, wxIMAGE_QUALITY_HIGH);
+        wxImage scaledImage = konsole.Rescale(30, 30, wxIMAGE_QUALITY_HIGH);
         wxBitmap bitmap(konsole);
-        wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(50, 500), wxSize(wxDefaultSize));
+        wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(10, 280), wxSize(wxDefaultSize));
+    }
+
+    wxImage cpu_icon;
+    if(cpu_icon.LoadFile("../cpu.png")){
+        wxImage scaledImage = cpu_icon.Rescale(100, 100, wxIMAGE_QUALITY_HIGH);
+        wxBitmap bitmap(cpu_icon);
+        wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(-20, 20), wxSize(wxDefaultSize));
+    }
+
+    wxImage temp_icon;
+    if(temp_icon.LoadFile("../temp.png")){
+        wxImage scaledImage = temp_icon.Rescale(100, 100, wxIMAGE_QUALITY_HIGH);
+        wxBitmap bitmap(temp_icon);
+        wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(-20, 60), wxSize(wxDefaultSize));
+    }
+
+    wxImage ram_icon;
+    if(ram_icon.LoadFile("../ram.png")){
+        wxImage scaledImage = ram_icon.Rescale(100, 100, wxIMAGE_QUALITY_HIGH);
+        wxBitmap bitmap(ram_icon);
+        wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(-20, 100), wxSize(wxDefaultSize));
     }
 
     //time track
-    timerText = new wxStaticText(panel, wxID_ANY, wxString::Format("%d m in VSCode", timeSpent), wxPoint(150, 630));
-    timerText2 = new wxStaticText(panel, wxID_ANY, wxString::Format("%d m in Konsole", timeSpent2), wxPoint(150, 530));
+    timerText = new wxStaticText(panel, wxID_ANY, wxString::Format("%d m", timeSpent), wxPoint(360, 245));
+    timerText2 = new wxStaticText(panel, wxID_ANY, wxString::Format("%d m", timeSpent2), wxPoint(360, 285));
 
-    cpuTemperature = new wxStaticText(panel, wxID_ANY, wxString::Format("CPU temp %s", cpuTemp), wxPoint(150, 400));
-    ram_usage = new wxStaticText(panel, wxID_ANY, wxString::Format("RAM usage: %s", RAM), wxPoint(150, 300));
-    cpu_usage = new wxStaticText(panel, wxID_ANY, wxString::Format("CPU usage: %s", CPU), wxPoint(150, 250));
+    cpuTemperature = new wxStaticText(panel, wxID_ANY, wxString::Format("%s", cpuTemp), wxPoint(360, 100));
+    ram_usage = new wxStaticText(panel, wxID_ANY, wxString::Format("%s", RAM), wxPoint(360, 140));
+    cpu_usage = new wxStaticText(panel, wxID_ANY, wxString::Format("%s", CPU), wxPoint(360, 60));
     timer.SetOwner(this);
     Bind(wxEVT_TIMER, &mainFrame::OnTimer, this);
     timer.Start(1000);
     
-    //command line
-    commandLine = new wxTextCtrl(panel, wxID_ANY, "", wxPoint(150, 50), wxSize(300, 40), wxTE_PROCESS_ENTER | wxBORDER_NONE);
-    commandLine->SetBackgroundColour(wxColour(50, 50, 50));
-    commandLine->SetForegroundColour(wxColour(250, 250, 250));
-    commandLine->SetFont(wxFont(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
-    
     //checkbox
     wxFont font(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
-    wxCheckBox *keyboard = new wxCheckBox(panel, wxID_ANY, "Keyboard Cleaning  ", wxPoint(200, 120), wxSize(250, 25), wxCHK_CHECKED);
+    wxCheckBox *keyboard = new wxCheckBox(panel, wxID_ANY, "Keyboard Cleaning  ", wxPoint(200, 500), wxSize(250, 25), wxCHK_CHECKED);
     keyboard->SetFont(font);
     keyboard->Bind(wxEVT_CHECKBOX, &mainFrame::isKeyboardOff, this);
     
-    commandLine->Bind(wxEVT_TEXT_ENTER, &mainFrame::readInput, this);
-
-    cpu_draw = new wxPanel(panel, wxID_ANY, wxPoint(250, 250), wxSize(300, 20));
-    cpu_draw->SetBackgroundColour(wxColour(30, 30, 50));
+    //panels1
+    cpu_draw = new wxPanel(panel, wxID_ANY, wxPoint(50, 60), wxSize(300, 20));
+    cpu_draw->SetBackgroundColour(wxColour(50, 50, 50));
     cpu_draw->Bind(wxEVT_PAINT, &mainFrame::draw, this);
+
+    cpu_temp = new wxPanel(panel, wxID_ANY, wxPoint(50, 100), wxSize(300, 20));
+    cpu_temp->SetBackgroundColour(wxColor(50, 50, 50));
+    cpu_temp->Bind(wxEVT_PAINT, &mainFrame::draw, this);
+
+    ram_draw = new wxPanel(panel, wxID_ANY, wxPoint(50, 140), wxSize(300, 20));
+    ram_draw->SetBackgroundColour(wxColor(50, 50, 50));
+    ram_draw->Bind(wxEVT_PAINT, &mainFrame::draw, this);
+
+    //panels2
+    vs_time = new wxPanel(panel, wxID_ANY, wxPoint(50, 250), wxSize(300, 10));
+    vs_time->SetBackgroundColour(wxColor(50, 50, 50));
+    vs_time->Bind(wxEVT_PAINT, &mainFrame::drawTime, this);
+
+    konsole_time = new wxPanel(panel, wxID_ANY, wxPoint(50, 290), wxSize(300, 10));
+    konsole_time->SetBackgroundColour(wxColor(50, 50, 50));
+    konsole_time->Bind(wxEVT_PAINT, &mainFrame::drawTime, this);
+}
+
+void mainFrame::drawTime(wxPaintEvent &event){
+    wxWindow* source = dynamic_cast<wxWindow*>(event.GetEventObject());
+    if(!source){return;}
+
+    wxPaintDC dc(source);
+    dc.SetPen(*wxWHITE_PEN);
+   
+    if(source == vs_time){
+        wxBrush fill_time(wxColour(0, 128, 255));
+        dc.SetBrush(fill_time);
+        dc.DrawRoundedRectangle(0, 0, minutes * 3, 10, 3);
+    }
+    else if(source == konsole_time){
+        wxBrush fill_time(wxColour(60, 60, 60));
+        dc.SetBrush(fill_time);
+        dc.DrawRoundedRectangle(0, 0, minutes2 * 3, 10, 3);
+    } 
 }
 
 void mainFrame::draw(wxPaintEvent &event){
-    wxPaintDC dc(cpu_draw);
+    wxWindow* source = dynamic_cast<wxWindow*>(event.GetEventObject());
+    if(!source){return;}
+    
+    wxPaintDC dc(source);
     dc.SetPen(*wxWHITE_PEN);
     dc.SetBrush(*wxTRANSPARENT_BRUSH);
-    double cpu_value;
-    if(remember_CPU.ToDouble(&cpu_value)){
-        std::cout << "succes\n";
+   
+    if(source == cpu_draw){
+        double cpu_value;
+        remember_CPU.ToDouble(&cpu_value);
+        dc.DrawRectangle(0, 0, cpu_value * 3, 20);
     }
-    else{
-        std::cout << "esuat\n";
+    else if(source == cpu_temp){
+        double temp_value;
+        remember_temp.ToDouble(&temp_value);
+        dc.DrawRectangle(0, 0, temp_value * 3, 20);
     }
-    dc.DrawRectangle(0, 0, cpu_value * 3, 20);
-    temp += 10;
-    std::cout << temp << '\n';
+    else if(source == ram_draw){
+        double ram_value;
+        remember_ram.ToDouble(&ram_value);
+        dc.DrawRectangle(0, 0, ram_value * 3, 20);
+    }
 }
 
-void mainFrame::readInput(wxCommandEvent& event){
-    wxString input = commandLine->GetValue();
-    if(input == "touchpad off"){
-        system("xinput disable 4");
-        system("xinput disable 9");
-        system("xinput disable 10");
-    }
-    else if(input == "touchpad on"){
-        system("xinput enable 4");
-        system("xinput enable 9");
-        system("xinput enable 10");
-    }
-}
 void mainFrame::isKeyboardOff(wxCommandEvent& event){
     int id = event.GetId();
     bool checked = ((wxCheckBox*)event.GetEventObject())->IsChecked();
@@ -121,8 +167,7 @@ void mainFrame::isKeyboardOff(wxCommandEvent& event){
 void mainFrame::OnTimer(wxTimerEvent& event) {
     const char *cmd_cpu_temp = "sensors | grep 'Core 0' | awk '{print $3}' | tr -d '+°C'";
     const char *cmd_cpu = "top -bn1 | grep \"Cpu(s)\" | awk '{print $2 + $4}'";
-    const char *cmd_ram = "free -h | awk '/Mem:/ {print $3}'";
-    const char *command = "xdotool search --name \"Visual Studio Code\"";
+    const char *cmd_ram = "free -h | awk '/Mem:/ {gsub(/[A-Za-z]/, \"\", $3); print $3}'";    const char *command = "xdotool search --name \"Visual Studio Code\"";
     const char *command2 = "xdotool search --name \"Konsole\"";
     int rezults = system(command);
     int rezults2 = system(command2);
@@ -139,7 +184,8 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
         RAM += read_ram;
     }
     if(ram_usage != nullptr){
-        ram_usage->SetLabel(wxString::Format("CPU usage: %s", RAM));
+        ram_usage->SetLabel(wxString::Format("%s", RAM));
+        remember_ram = RAM;
         RAM = "";
     }
 
@@ -152,7 +198,7 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
         CPU += read_cpu;
     }
     if(cpu_usage != nullptr){
-        cpu_usage->SetLabel(wxString::Format("CPU usage: %s", CPU));
+        cpu_usage->SetLabel(wxString::Format("%s", CPU));
         remember_CPU = CPU;
         CPU = "";
     }
@@ -166,7 +212,8 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
         cpuTemp += read_cpu_temp;
     }
     if(cpuTemperature != nullptr){
-        cpuTemperature->SetLabel(wxString::Format("CPU temp: %s", cpuTemp));
+        cpuTemperature->SetLabel(wxString::Format("%s", cpuTemp));
+        remember_temp = cpuTemp;
         cpuTemp = "";
     }
     
@@ -178,7 +225,7 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
         }
         timeSpent += 1;
         if(timerText != nullptr){
-            timerText->SetLabel(wxString::Format("%d m in VSCode", minutes));
+            timerText->SetLabel(wxString::Format("%d m", minutes));
         }
         else{
             std::cerr << "erroare" << '\n';
@@ -194,11 +241,15 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
         }
         timeSpent2 += 1;
         if(timerText2 != nullptr){
-            timerText2->SetLabel(wxString::Format("%d m in Konsole", minutes2));
+            timerText2->SetLabel(wxString::Format("%d m", minutes2));
         }
         else{
             std::cerr << "erroare" << '\n';
         }
     }
     cpu_draw->Refresh();
+    cpu_temp->Refresh();
+    ram_draw->Refresh();
+    vs_time->Refresh();
+    konsole_time->Refresh();
 }

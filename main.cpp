@@ -4,8 +4,8 @@
 #include "main.h"
 #include "mframe.h"
 
-float size_x = 600;
-float size_y = 750.f;
+float size_x = 410;
+float size_y = 500.f;
 
 bool Main::OnInit() {
     mainFrame *frame = new mainFrame("Lizon");
