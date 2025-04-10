@@ -17,18 +17,27 @@ class mainFrame : public wxFrame{
     wxStaticText *cpuTemperature;
     wxStaticText *cpu_usage;
     wxStaticText *ram_usage;
+    wxStaticText *batery_procent;
+
     wxPanel *cpu_draw;
     wxPanel *cpu_temp;
     wxPanel *ram_draw;
     wxPanel *vs_time;
     wxPanel *konsole_time;
+    wxPanel *batery_draw;
+
     wxTimer timer;
+
     wxString cpuTemp;
     wxString CPU;
     wxString RAM;
+    wxString BATERY;
+    wxString BATERY_NUMBER;
+
     wxString remember_CPU;
     wxString remember_temp;
     wxString remember_ram;
+    wxString remember_batery;
     
     mainFrame(const wxString& title);
     

@@ -68,6 +68,8 @@ mainFrame::mainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, 
     cpuTemperature = new wxStaticText(panel, wxID_ANY, wxString::Format("%s", cpuTemp), wxPoint(360, 100));
     ram_usage = new wxStaticText(panel, wxID_ANY, wxString::Format("%s", RAM), wxPoint(360, 140));
     cpu_usage = new wxStaticText(panel, wxID_ANY, wxString::Format("%s", CPU), wxPoint(360, 60));
+    batery_procent = new wxStaticText(panel, wxID_ANY, wxString::Format("%s", BATERY), wxPoint(115, 397));
+
     timer.SetOwner(this);
     Bind(wxEVT_TIMER, &mainFrame::OnTimer, this);
     timer.Start(1000);
@@ -90,6 +92,10 @@ mainFrame::mainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, 
     ram_draw = new wxPanel(panel, wxID_ANY, wxPoint(50, 140), wxSize(300, 20));
     ram_draw->SetBackgroundColour(wxColor(50, 50, 50));
     ram_draw->Bind(wxEVT_PAINT, &mainFrame::draw, this);
+
+    batery_draw = new wxPanel(panel, wxID_ANY, wxPoint(50, 400), wxSize(50, 15));
+    batery_draw->SetBackgroundColour(wxColor(50, 50, 50));
+    batery_draw->Bind(wxEVT_PAINT, &mainFrame::draw, this);
 
     //panels2
     vs_time = new wxPanel(panel, wxID_ANY, wxPoint(50, 250), wxSize(300, 10));
@@ -125,23 +131,57 @@ void mainFrame::draw(wxPaintEvent &event){
     if(!source){return;}
     
     wxPaintDC dc(source);
-    dc.SetPen(*wxWHITE_PEN);
-    dc.SetBrush(*wxTRANSPARENT_BRUSH);
    
     if(source == cpu_draw){
+        dc.SetPen(*wxWHITE_PEN);
+        dc.SetBrush(*wxTRANSPARENT_BRUSH);
+
         double cpu_value;
         remember_CPU.ToDouble(&cpu_value);
         dc.DrawRectangle(0, 0, cpu_value * 3, 20);
     }
     else if(source == cpu_temp){
+        dc.SetPen(*wxWHITE_PEN);
+        dc.SetBrush(*wxTRANSPARENT_BRUSH);
+
         double temp_value;
         remember_temp.ToDouble(&temp_value);
         dc.DrawRectangle(0, 0, temp_value * 3, 20);
     }
     else if(source == ram_draw){
+        dc.SetPen(*wxWHITE_PEN);
+        dc.SetBrush(*wxTRANSPARENT_BRUSH);
+
         double ram_value;
         remember_ram.ToDouble(&ram_value);
         dc.DrawRectangle(0, 0, ram_value * 3, 20);
+    }
+    else if(source == batery_draw){
+        double batery_value;
+        remember_batery.ToDouble(&batery_value);
+        
+        if(batery_value >= 75){
+            dc.SetPen(*wxWHITE_PEN);
+            wxBrush fill_time(wxColour(40, 198, 71));
+            dc.SetBrush(fill_time);
+        }
+        else if(batery_value >= 50 && batery_value <= 74){
+            dc.SetPen(*wxWHITE_PEN);
+            wxBrush fill_time(wxColour(71, 232, 22));
+            dc.SetBrush(fill_time); 
+        }
+        else if(batery_value >= 20 && batery_value <= 49){
+            dc.SetPen(*wxWHITE_PEN);
+            wxBrush fill_time(wxColour(228, 243, 14));
+            dc.SetBrush(fill_time);
+        }
+        else if(batery_value >= 0 && batery_value <= 19){
+            dc.SetPen(*wxWHITE_PEN);
+            wxBrush fill_time(wxColour(255, 51, 51));
+            dc.SetBrush(fill_time);
+        }
+
+        dc.DrawRectangle(0, 0, batery_value / 2, 15);
     }
 }
 
@@ -165,6 +205,9 @@ void mainFrame::isKeyboardOff(wxCommandEvent& event){
 }
 
 void mainFrame::OnTimer(wxTimerEvent& event) {
+    const char *cmd_batery = "cat /sys/class/power_supply/BAT0/capacity | awk '{print $1 \"%\"}'";
+    const char *cmd_number_batery = "cat /sys/class/power_supply/BAT0/capacity";
+
     const char *cmd_cpu_temp = "sensors | grep 'Core 0' | awk '{print $3}' | tr -d '+°C'";
     const char *cmd_cpu = "top -bn1 | grep \"Cpu(s)\" | awk '{print $2 + $4}'";
     const char *cmd_ram = "free -h | awk '/Mem:/ {gsub(/[A-Za-z]/, \"\", $3); print $3}'";    const char *command = "xdotool search --name \"Visual Studio Code\"";
@@ -175,7 +218,33 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
     char read_cpu[128];
     char read_ram[128];
 
-    //reda RAM usage 
+    char read_batery[128];
+    char read_number_batery[128];
+
+    //batery status
+    std::unique_ptr<FILE, decltype(&pclose)> batery_pipe(popen(cmd_batery, "r"), pclose); 
+    if(!batery_pipe){return;}
+
+    while(fgets(read_batery, sizeof(read_batery), batery_pipe.get()) != nullptr){
+        BATERY += read_batery;
+    }
+    if(ram_usage != nullptr){
+        batery_procent->SetLabel(wxString::Format("%s", BATERY));
+        BATERY = "";
+    }
+    
+    std::unique_ptr<FILE, decltype(&pclose)> batery_number_pipe(popen(cmd_number_batery, "r"), pclose); 
+    if(!batery_number_pipe){return;}
+    
+    while(fgets(read_number_batery, sizeof(read_number_batery), batery_number_pipe.get()) != nullptr){
+        BATERY_NUMBER += read_number_batery;
+    }
+    if(ram_usage != nullptr){
+        remember_batery = BATERY_NUMBER;
+        BATERY_NUMBER = "";
+    }
+
+
     std::unique_ptr<FILE, decltype(&pclose)> pipe3(popen(cmd_ram, "r"), pclose); 
     if(!pipe3){
         return;
@@ -250,6 +319,7 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
     cpu_draw->Refresh();
     cpu_temp->Refresh();
     ram_draw->Refresh();
+    batery_draw->Refresh();
     vs_time->Refresh();
     konsole_time->Refresh();
 }
