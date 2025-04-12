@@ -12,13 +12,16 @@ extern int minutes2;
 
 class mainFrame : public wxFrame{
     public:
+    bool isBatery;
+    
     wxStaticText *timerText;
     wxStaticText *timerText2;
     wxStaticText *cpuTemperature;
     wxStaticText *cpu_usage;
     wxStaticText *ram_usage;
     wxStaticText *batery_procent;
-
+    
+    wxPanel *panel;
     wxPanel *cpu_draw;
     wxPanel *cpu_temp;
     wxPanel *ram_draw;

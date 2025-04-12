@@ -21,7 +21,7 @@ mainFrame::mainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, 
     SetBackgroundColour(wxColour(30, 30, 30));
     SetTransparent(230);
     
-    wxPanel *panel = new wxPanel(this, wxID_ANY);
+    panel = new wxPanel(this, wxID_ANY);
 
     wxInitAllImageHandlers();
     
@@ -68,7 +68,9 @@ mainFrame::mainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, 
     cpuTemperature = new wxStaticText(panel, wxID_ANY, wxString::Format("%s", cpuTemp), wxPoint(360, 100));
     ram_usage = new wxStaticText(panel, wxID_ANY, wxString::Format("%s", RAM), wxPoint(360, 140));
     cpu_usage = new wxStaticText(panel, wxID_ANY, wxString::Format("%s", CPU), wxPoint(360, 60));
-    batery_procent = new wxStaticText(panel, wxID_ANY, wxString::Format("%s", BATERY), wxPoint(115, 397));
+    
+    batery_draw = nullptr;
+    batery_procent = nullptr;
 
     timer.SetOwner(this);
     Bind(wxEVT_TIMER, &mainFrame::OnTimer, this);
@@ -92,10 +94,6 @@ mainFrame::mainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, 
     ram_draw = new wxPanel(panel, wxID_ANY, wxPoint(50, 140), wxSize(300, 20));
     ram_draw->SetBackgroundColour(wxColor(50, 50, 50));
     ram_draw->Bind(wxEVT_PAINT, &mainFrame::draw, this);
-
-    batery_draw = new wxPanel(panel, wxID_ANY, wxPoint(50, 400), wxSize(50, 15));
-    batery_draw->SetBackgroundColour(wxColor(50, 50, 50));
-    batery_draw->Bind(wxEVT_PAINT, &mainFrame::draw, this);
 
     //panels2
     vs_time = new wxPanel(panel, wxID_ANY, wxPoint(50, 250), wxSize(300, 10));
@@ -156,7 +154,7 @@ void mainFrame::draw(wxPaintEvent &event){
         remember_ram.ToDouble(&ram_value);
         dc.DrawRectangle(0, 0, ram_value * 3, 20);
     }
-    else if(source == batery_draw){
+    else if(source == batery_draw && isBatery){
         double batery_value;
         remember_batery.ToDouble(&batery_value);
         
@@ -228,23 +226,36 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
     while(fgets(read_batery, sizeof(read_batery), batery_pipe.get()) != nullptr){
         BATERY += read_batery;
     }
-    if(ram_usage != nullptr){
-        batery_procent->SetLabel(wxString::Format("%s", BATERY));
-        BATERY = "";
+    if(!BATERY){
+        isBatery = false;
+    }else{
+        isBatery = true;
+        if(isBatery && batery_draw == nullptr){
+            batery_procent = new wxStaticText(panel, wxID_ANY, wxString::Format("%s", BATERY), wxPoint(115, 397));
+    
+            batery_draw = new wxPanel(panel, wxID_ANY, wxPoint(50, 400), wxSize(50, 15));
+            batery_draw->SetBackgroundColour(wxColor(50, 50, 50));
+            batery_draw->Bind(wxEVT_PAINT, &mainFrame::draw, this);
+        }
+        if(ram_usage != nullptr){
+            batery_procent->SetLabel(wxString::Format("%s", BATERY));
+            BATERY = "";
+        }
+        
+        std::unique_ptr<FILE, decltype(&pclose)> batery_number_pipe(popen(cmd_number_batery, "r"), pclose); 
+        if(!batery_number_pipe){return;}
+    
+        while(fgets(read_number_batery, sizeof(read_number_batery), batery_number_pipe.get()) != nullptr){
+            BATERY_NUMBER += read_number_batery;
+        }
+    
+        if(ram_usage != nullptr){
+            remember_batery = BATERY_NUMBER;
+            BATERY_NUMBER = "";
+        }
     }
     
-    std::unique_ptr<FILE, decltype(&pclose)> batery_number_pipe(popen(cmd_number_batery, "r"), pclose); 
-    if(!batery_number_pipe){return;}
-    
-    while(fgets(read_number_batery, sizeof(read_number_batery), batery_number_pipe.get()) != nullptr){
-        BATERY_NUMBER += read_number_batery;
-    }
-    if(ram_usage != nullptr){
-        remember_batery = BATERY_NUMBER;
-        BATERY_NUMBER = "";
-    }
-
-
+    //RAM usage
     std::unique_ptr<FILE, decltype(&pclose)> pipe3(popen(cmd_ram, "r"), pclose); 
     if(!pipe3){
         return;
@@ -319,7 +330,10 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
     cpu_draw->Refresh();
     cpu_temp->Refresh();
     ram_draw->Refresh();
-    batery_draw->Refresh();
     vs_time->Refresh();
     konsole_time->Refresh();
+
+    if(isBatery && batery_draw != nullptr){
+        batery_draw->Refresh();
+    }
 }
