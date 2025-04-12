@@ -179,7 +179,8 @@ void mainFrame::draw(wxPaintEvent &event){
             dc.SetBrush(fill_time);
         }
 
-        dc.DrawRectangle(0, 0, batery_value / 2, 15);
+        //dc.DrawRectangle(0, 0, batery_value / 2, 15);
+        dc.DrawRoundedRectangle(0, 0, batery_value / 2, 15, 1);
     }
 }
 
@@ -231,7 +232,7 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
     }else{
         isBatery = true;
         if(isBatery && batery_draw == nullptr){
-            batery_procent = new wxStaticText(panel, wxID_ANY, wxString::Format("%s", BATERY), wxPoint(115, 397));
+            batery_procent = new wxStaticText(panel, wxID_ANY, wxString::Format("%s", BATERY), wxPoint(61, 417));
     
             batery_draw = new wxPanel(panel, wxID_ANY, wxPoint(50, 400), wxSize(50, 15));
             batery_draw->SetBackgroundColour(wxColor(50, 50, 50));
