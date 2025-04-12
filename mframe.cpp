@@ -115,12 +115,12 @@ void mainFrame::drawTime(wxPaintEvent &event){
     if(source == vs_time){
         wxBrush fill_time(wxColour(0, 128, 255));
         dc.SetBrush(fill_time);
-        dc.DrawRoundedRectangle(0, 0, minutes * 3, 10, 3);
+        dc.DrawRoundedRectangle(0, 0, minutes / 2, 10, 3);
     }
     else if(source == konsole_time){
         wxBrush fill_time(wxColour(60, 60, 60));
         dc.SetBrush(fill_time);
-        dc.DrawRoundedRectangle(0, 0, minutes2 * 3, 10, 3);
+        dc.DrawRoundedRectangle(0, 0, minutes2 / 2, 10, 3);
     } 
 }
 
