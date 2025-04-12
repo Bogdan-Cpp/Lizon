@@ -24,7 +24,7 @@ mainFrame::mainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, 
     panel = new wxPanel(this, wxID_ANY);
 
     wxInitAllImageHandlers();
-    
+
     //imagini
     wxImage vsIcon;
     if(vsIcon.LoadFile("../vscode.png")){
@@ -68,7 +68,7 @@ mainFrame::mainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, 
     cpuTemperature = new wxStaticText(panel, wxID_ANY, wxString::Format("%s", cpuTemp), wxPoint(360, 100));
     ram_usage = new wxStaticText(panel, wxID_ANY, wxString::Format("%s", RAM), wxPoint(360, 140));
     cpu_usage = new wxStaticText(panel, wxID_ANY, wxString::Format("%s", CPU), wxPoint(360, 60));
-    
+
     batery_draw = nullptr;
     batery_procent = nullptr;
 
@@ -129,7 +129,7 @@ void mainFrame::draw(wxPaintEvent &event){
     if(!source){return;}
     
     wxPaintDC dc(source);
-   
+
     if(source == cpu_draw){
         dc.SetPen(*wxWHITE_PEN);
         dc.SetBrush(*wxTRANSPARENT_BRUSH);
@@ -151,8 +151,10 @@ void mainFrame::draw(wxPaintEvent &event){
         dc.SetBrush(*wxTRANSPARENT_BRUSH);
 
         double ram_value;
+        double total_ram;
+        TOTAL_RAM.ToDouble(&total_ram);
         remember_ram.ToDouble(&ram_value);
-        dc.DrawRectangle(0, 0, ram_value * 3, 20);
+        dc.DrawRectangle(0, 0, ((ram_value + 1) / 10) * 300, 20);
     }
     else if(source == batery_draw && isBatery){
         double batery_value;
@@ -211,15 +213,19 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
     const char *cmd_cpu = "top -bn1 | grep \"Cpu(s)\" | awk '{print $2 + $4}'";
     const char *cmd_ram = "free -h | awk '/Mem:/ {gsub(/[A-Za-z]/, \"\", $3); print $3}'";    const char *command = "xdotool search --name \"Visual Studio Code\"";
     const char *command2 = "xdotool search --name \"Konsole\"";
+    const char *cmd_total_ram = "free -g | awk '/Mem:/ {print $2}'";
     int rezults = system(command);
     int rezults2 = system(command2);
     char read_cpu_temp[128];
     char read_cpu[128];
     char read_ram[128];
+    char read_total_ram[128];
 
     char read_batery[128];
     char read_number_batery[128];
-
+    char read_gpu[128];
+    char read_number_gpu[128];
+    
     //batery status
     std::unique_ptr<FILE, decltype(&pclose)> batery_pipe(popen(cmd_batery, "r"), pclose); 
     if(!batery_pipe){return;}
@@ -263,6 +269,13 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
     }
     while(fgets(read_ram, sizeof(read_ram), pipe3.get()) != nullptr){
         RAM += read_ram;
+    }
+    std::unique_ptr<FILE, decltype(&pclose)> total_ram_pipe(popen(cmd_total_ram, "r"), pclose); 
+    if(!total_ram_pipe){
+        return;
+    }
+    while(fgets(read_total_ram, sizeof(read_total_ram), total_ram_pipe.get()) != nullptr){
+        TOTAL_RAM += read_total_ram;
     }
     if(ram_usage != nullptr){
         ram_usage->SetLabel(wxString::Format("%s", RAM));

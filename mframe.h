@@ -20,7 +20,7 @@ class mainFrame : public wxFrame{
     wxStaticText *cpu_usage;
     wxStaticText *ram_usage;
     wxStaticText *batery_procent;
-    
+
     wxPanel *panel;
     wxPanel *cpu_draw;
     wxPanel *cpu_temp;
@@ -36,6 +36,7 @@ class mainFrame : public wxFrame{
     wxString RAM;
     wxString BATERY;
     wxString BATERY_NUMBER;
+    wxString TOTAL_RAM;
 
     wxString remember_CPU;
     wxString remember_temp;
