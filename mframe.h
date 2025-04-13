@@ -20,6 +20,7 @@ class mainFrame : public wxFrame{
     wxStaticText *cpu_usage;
     wxStaticText *ram_usage;
     wxStaticText *batery_procent;
+    wxStaticText *volume_procent;
 
     wxPanel *panel;
     wxPanel *cpu_draw;
@@ -37,16 +38,20 @@ class mainFrame : public wxFrame{
     wxString BATERY;
     wxString BATERY_NUMBER;
     wxString TOTAL_RAM;
+    wxString CURRENT_VOLUME;
 
     wxString remember_CPU;
     wxString remember_temp;
     wxString remember_ram;
     wxString remember_batery;
+    wxString remember_volume;
 
     wxSlider *volume;
+    wxSlider *volume2;
     
     mainFrame(const wxString& title);
     
+    void volumeFunction2(wxCommandEvent &event);
     void volumeFunction(wxCommandEvent &event);
     void isKeyboardOff(wxCommandEvent& event);
     void OnTimer(wxTimerEvent& event);

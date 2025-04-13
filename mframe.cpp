@@ -72,9 +72,9 @@ mainFrame::mainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, 
 
     batery_draw = nullptr;
     batery_procent = nullptr;
-
-    volume = new wxSlider(panel, wxID_ANY, 0, 0, 100, wxPoint(50, 450), wxSize(300, -1), wxSL_HORIZONTAL | wxSL_LABELS | wxSL_TICKS);
-    volume->Bind(wxEVT_SLIDER, &mainFrame::volumeFunction, this);
+    volume = nullptr;
+    volume_procent = nullptr;
+    volume2 = nullptr;
 
     timer.SetOwner(this);
     Bind(wxEVT_TIMER, &mainFrame::OnTimer, this);
@@ -109,13 +109,23 @@ mainFrame::mainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, 
     konsole_time->Bind(wxEVT_PAINT, &mainFrame::drawTime, this);
 }
 
-void mainFrame::volumeFunction(wxCommandEvent &event){
-    std::string volume_command = "amixer set Master ";
+void mainFrame::volumeFunction2(wxCommandEvent &event){
+    std::string volume_command = "pactl set-source-volume @DEFAULT_SOURCE@ ";
     int value = volume->GetValue();
 
     std::string string_value = std::to_string(value);
     volume_command = volume_command + string_value + "%";
 
+    system(volume_command.c_str());
+}
+
+void mainFrame::volumeFunction(wxCommandEvent &event){
+    std::string volume_command = "pactl set-sink-volume @DEFAULT_SINK@ ";
+    int value = volume->GetValue();
+
+    std::string string_value = std::to_string(value);
+    volume_command = volume_command + string_value + "%";
+    
     system(volume_command.c_str());
 }
 
@@ -222,24 +232,31 @@ void mainFrame::isKeyboardOff(wxCommandEvent& event){
 void mainFrame::OnTimer(wxTimerEvent& event) {
     const char *cmd_batery = "cat /sys/class/power_supply/BAT0/capacity | awk '{print $1 \"%\"}'";
     const char *cmd_number_batery = "cat /sys/class/power_supply/BAT0/capacity";
-
     const char *cmd_cpu_temp = "sensors | grep 'Core 0' | awk '{print $3}' | tr -d '+°C'";
     const char *cmd_cpu = "top -bn1 | grep \"Cpu(s)\" | awk '{print $2 + $4}'";
     const char *cmd_ram = "free -h | awk '/Mem:/ {gsub(/[A-Za-z]/, \"\", $3); print $3}'";    const char *command = "xdotool search --name \"Visual Studio Code\"";
     const char *command2 = "xdotool search --name \"Konsole\"";
     const char *cmd_total_ram = "free -g | awk '/Mem:/ {print $2}'";
+    const char* cmd_current_volume = "pactl get-sink-volume @DEFAULT_SINK@ | grep -oP \"\\d+(?=%)\" | head -1";
     int rezults = system(command);
     int rezults2 = system(command2);
     char read_cpu_temp[128];
     char read_cpu[128];
     char read_ram[128];
     char read_total_ram[128];
-
     char read_batery[128];
     char read_number_batery[128];
     char read_gpu[128];
     char read_number_gpu[128];
-    
+    char read_current_volume[128];
+    //read the current volume
+    std::unique_ptr<FILE, decltype(&pclose)> current_volume_pipe(popen(cmd_current_volume, "r"), pclose); 
+    if(!current_volume_pipe){return;}
+
+    while(fgets(read_current_volume, sizeof(read_current_volume), current_volume_pipe.get()) != nullptr){
+        CURRENT_VOLUME += read_current_volume;
+    }
+ 
     //batery status
     std::unique_ptr<FILE, decltype(&pclose)> batery_pipe(popen(cmd_batery, "r"), pclose); 
     if(!batery_pipe){return;}
@@ -247,9 +264,29 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
     while(fgets(read_batery, sizeof(read_batery), batery_pipe.get()) != nullptr){
         BATERY += read_batery;
     }
+
     if(!BATERY){
         isBatery = false;
-    }else{
+        double volume_value;
+        CURRENT_VOLUME.ToDouble(&volume_value);
+        remember_volume = CURRENT_VOLUME;
+       
+        if(volume == nullptr && volume_procent == nullptr && volume2 == nullptr){
+            volume = new wxSlider(panel, wxID_ANY, volume_value, 0, 100, wxPoint(50, 350), wxSize(300, -1));
+            volume2 = new wxSlider(panel, wxID_ANY, 0, 0, 100, wxPoint(50, 400), wxSize(300, -1));
+            volume_procent = new wxStaticText(panel, wxID_ANY, CURRENT_VOLUME, wxPoint(350, 355));
+            
+            volume->Bind(wxEVT_SLIDER, &mainFrame::volumeFunction, this);
+            volume2->Bind(wxEVT_SLIDER, &mainFrame::volumeFunction2, this);
+        }
+        if(volume_procent != nullptr){
+            volume_procent->SetLabel(wxString::Format(CURRENT_VOLUME));
+        }
+        
+        CURRENT_VOLUME = "";
+    }
+    else{
+        
         isBatery = true;
         if(isBatery && batery_draw == nullptr){
             batery_procent = new wxStaticText(panel, wxID_ANY, wxString::Format("%s", BATERY), wxPoint(61, 417));
