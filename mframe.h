@@ -42,9 +42,12 @@ class mainFrame : public wxFrame{
     wxString remember_temp;
     wxString remember_ram;
     wxString remember_batery;
+
+    wxSlider *volume;
     
     mainFrame(const wxString& title);
     
+    void volumeFunction(wxCommandEvent &event);
     void isKeyboardOff(wxCommandEvent& event);
     void OnTimer(wxTimerEvent& event);
     void draw(wxPaintEvent &event);

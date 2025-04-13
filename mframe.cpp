@@ -8,6 +8,7 @@
 #include <cstdio>
 #include <unordered_map>
 #include <memory>
+#include <string>
 #include "mframe.h"
 #include "main.h"
 
@@ -72,6 +73,9 @@ mainFrame::mainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, 
     batery_draw = nullptr;
     batery_procent = nullptr;
 
+    volume = new wxSlider(panel, wxID_ANY, 0, 0, 100, wxPoint(50, 450), wxSize(300, -1), wxSL_HORIZONTAL | wxSL_LABELS | wxSL_TICKS);
+    volume->Bind(wxEVT_SLIDER, &mainFrame::volumeFunction, this);
+
     timer.SetOwner(this);
     Bind(wxEVT_TIMER, &mainFrame::OnTimer, this);
     timer.Start(1000);
@@ -103,6 +107,16 @@ mainFrame::mainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, 
     konsole_time = new wxPanel(panel, wxID_ANY, wxPoint(50, 290), wxSize(300, 10));
     konsole_time->SetBackgroundColour(wxColor(50, 50, 50));
     konsole_time->Bind(wxEVT_PAINT, &mainFrame::drawTime, this);
+}
+
+void mainFrame::volumeFunction(wxCommandEvent &event){
+    std::string volume_command = "amixer set Master ";
+    int value = volume->GetValue();
+
+    std::string string_value = std::to_string(value);
+    volume_command = volume_command + string_value + "%";
+
+    system(volume_command.c_str());
 }
 
 void mainFrame::drawTime(wxPaintEvent &event){
