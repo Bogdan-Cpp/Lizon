@@ -13,6 +13,19 @@ extern int minutes2;
 class mainFrame : public wxFrame{
     public:
     bool isBatery;
+    int volume_size_x;
+    int volume_poz_x;
+    int volume_poz_y;
+
+    int volume2_size_x;
+    int volume2_poz_x;
+    int volume2_poz_y;
+
+    int text_poz_x;
+    int text_poz_y;
+
+    int image_poz_x;
+    int image_poz_y;
     
     wxStaticText *timerText;
     wxStaticText *timerText2;
@@ -48,6 +61,8 @@ class mainFrame : public wxFrame{
 
     wxSlider *volume;
     wxSlider *volume2;
+
+    wxStaticBitmap *imageBitmap;
     
     mainFrame(const wxString& title);
     

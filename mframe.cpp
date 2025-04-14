@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <memory>
 #include <string>
+#include <vector>
 #include "mframe.h"
 #include "main.h"
 
@@ -62,6 +63,8 @@ mainFrame::mainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, 
         wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(-20, 100), wxSize(wxDefaultSize));
     }
 
+    imageBitmap = nullptr;
+    
     //time track
     timerText = new wxStaticText(panel, wxID_ANY, wxString::Format("%d m", timeSpent), wxPoint(360, 245));
     timerText2 = new wxStaticText(panel, wxID_ANY, wxString::Format("%d m", timeSpent2), wxPoint(360, 285));
@@ -267,27 +270,26 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
 
     if(!BATERY){
         isBatery = false;
-        double volume_value;
-        CURRENT_VOLUME.ToDouble(&volume_value);
-        remember_volume = CURRENT_VOLUME;
-       
-        if(volume == nullptr && volume_procent == nullptr && volume2 == nullptr){
-            volume = new wxSlider(panel, wxID_ANY, volume_value, 0, 100, wxPoint(50, 350), wxSize(300, -1));
-            volume2 = new wxSlider(panel, wxID_ANY, 0, 0, 100, wxPoint(50, 400), wxSize(300, -1));
-            volume_procent = new wxStaticText(panel, wxID_ANY, CURRENT_VOLUME, wxPoint(350, 355));
-            
-            volume->Bind(wxEVT_SLIDER, &mainFrame::volumeFunction, this);
-            volume2->Bind(wxEVT_SLIDER, &mainFrame::volumeFunction2, this);
-        }
-        if(volume_procent != nullptr){
-            volume_procent->SetLabel(wxString::Format(CURRENT_VOLUME));
-        }
-        
-        CURRENT_VOLUME = "";
+        volume_size_x = 300;
+        volume_poz_x = 50;
+        volume_poz_y = 350;
+
+        volume2_size_x = 300;
+        volume2_poz_x = 50;
+        volume2_poz_y = 400;
+
+        text_poz_x = 350;
+        text_poz_y = 355;
+
+        image_poz_x = -40;
+        image_poz_y = 290;
     }
     else{
-        
         isBatery = true;
+        volume2_size_x = 300;
+        volume2_poz_x = 50;
+        volume2_poz_y = 450;
+        
         if(isBatery && batery_draw == nullptr){
             batery_procent = new wxStaticText(panel, wxID_ANY, wxString::Format("%s", BATERY), wxPoint(61, 417));
     
@@ -310,6 +312,62 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
         if(ram_usage != nullptr){
             remember_batery = BATERY_NUMBER;
             BATERY_NUMBER = "";
+        }
+    }
+
+    //volume
+    double volume_value;
+    double temp_volume;
+    temp_volume = volume_value;
+    CURRENT_VOLUME.ToDouble(&volume_value);
+    remember_volume = CURRENT_VOLUME;
+
+    if(volume_value != temp_volume && imageBitmap != nullptr){
+        imageBitmap->Destroy();
+        imageBitmap = nullptr;
+    }
+       
+    if(volume == nullptr && volume_procent == nullptr && volume2 == nullptr){
+        volume = new wxSlider(panel, wxID_ANY, volume_value, 0, 100, wxPoint(volume_poz_x, volume_poz_y), wxSize(volume_size_x, -1));
+        volume2 = new wxSlider(panel, wxID_ANY, 0, 0, 100, wxPoint(volume2_poz_x, volume2_poz_y), wxSize(volume2_size_x, -1));
+        volume_procent = new wxStaticText(panel, wxID_ANY, CURRENT_VOLUME, wxPoint(text_poz_x, text_poz_y));
+            
+        volume->Bind(wxEVT_SLIDER, &mainFrame::volumeFunction, this);
+        volume2->Bind(wxEVT_SLIDER, &mainFrame::volumeFunction2, this);
+    }
+    if(volume_procent != nullptr){volume_procent->SetLabel(wxString::Format(CURRENT_VOLUME));}
+    CURRENT_VOLUME = "";
+
+    if(imageBitmap == nullptr && volume_value >= 70){
+        wxImage image;
+        if(image.LoadFile("../dif1.png")){
+            wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
+            wxBitmap bitmap(image);
+            imageBitmap = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image_poz_x, image_poz_y), wxSize(wxDefaultSize));
+        }
+    }
+    if(imageBitmap == nullptr && volume_value >= 40 && volume_value < 70){
+        wxImage image;
+        if(image.LoadFile("../dif2.png")){
+            wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
+            wxBitmap bitmap(image);
+            imageBitmap = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image_poz_x, image_poz_y), wxSize(wxDefaultSize));
+        }
+    }
+    if(imageBitmap == nullptr && volume_value > 0 && volume_value < 40){
+        wxImage image;
+        if(image.LoadFile("../dif3.png")){
+            wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
+            wxBitmap bitmap(image);
+            imageBitmap = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image_poz_x, image_poz_y), wxSize(wxDefaultSize));
+        }
+    }
+    if(imageBitmap == nullptr && volume_value == 0){
+        wxImage image;
+        if(image.LoadFile("../dif4.png")){
+            wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
+            wxBitmap bitmap(image);
+            imageBitmap = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image_poz_x, image_poz_y), wxSize(wxDefaultSize));
         }
     }
     

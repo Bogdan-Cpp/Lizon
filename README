@@ -1,4 +1,3 @@
 install:    sudo apt install xdotool
             sudo apt install lm-sensors
             sudo apt install pulseaudio-utils
-
