@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <memory>
 #include <string>
+#include <wx/icon.h>
 #include <vector>
 #include "mframe.h"
 #include "main.h"
@@ -27,37 +28,41 @@ mainFrame::mainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, 
 
     wxInitAllImageHandlers();
 
+    wxIcon lizon_icon;
+    lizon_icon.LoadFile("../assets/icon.ico", wxBITMAP_TYPE_ICO);
+    SetIcon(lizon_icon);
+
     //imagini
     wxImage vsIcon;
-    if(vsIcon.LoadFile("../vscode.png")){
+    if(vsIcon.LoadFile("../assets/vscode.png")){
         wxImage scaledImage = vsIcon.Rescale(25, 25, wxIMAGE_QUALITY_HIGH);
         wxBitmap bitmap(vsIcon);
         wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(10, 240), wxSize(wxDefaultSize));
     }
 
     wxImage konsole;
-    if(konsole.LoadFile("../konsole.png")){
+    if(konsole.LoadFile("../assets/konsole.png")){
         wxImage scaledImage = konsole.Rescale(30, 30, wxIMAGE_QUALITY_HIGH);
         wxBitmap bitmap(konsole);
         wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(10, 280), wxSize(wxDefaultSize));
     }
 
     wxImage cpu_icon;
-    if(cpu_icon.LoadFile("../cpu.png")){
+    if(cpu_icon.LoadFile("../assets/cpu.png")){
         wxImage scaledImage = cpu_icon.Rescale(100, 100, wxIMAGE_QUALITY_HIGH);
         wxBitmap bitmap(cpu_icon);
         wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(-20, 20), wxSize(wxDefaultSize));
     }
 
     wxImage temp_icon;
-    if(temp_icon.LoadFile("../temp.png")){
+    if(temp_icon.LoadFile("../assets/temp.png")){
         wxImage scaledImage = temp_icon.Rescale(100, 100, wxIMAGE_QUALITY_HIGH);
         wxBitmap bitmap(temp_icon);
         wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(-20, 60), wxSize(wxDefaultSize));
     }
 
     wxImage ram_icon;
-    if(ram_icon.LoadFile("../ram.png")){
+    if(ram_icon.LoadFile("../assets/ram.png")){
         wxImage scaledImage = ram_icon.Rescale(100, 100, wxIMAGE_QUALITY_HIGH);
         wxBitmap bitmap(ram_icon);
         wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(-20, 100), wxSize(wxDefaultSize));
@@ -293,9 +298,13 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
 
         text_poz_x = 350;
         text_poz_y = 355;
+        text2_poz_x = 350;
+        text2_poz_y = 405;
 
         image_poz_x = -40;
         image_poz_y = 290;
+        image2_poz_x = -40;
+        image2_poz_y = 340;
     }
     else{
         isBatery = true;
@@ -378,7 +387,7 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
     
     if(imageBitmap == nullptr && volume_value >= 70){
         wxImage image;
-        if(image.LoadFile("../dif1.png")){
+        if(image.LoadFile("../assets/dif1.png")){
             wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
             wxBitmap bitmap(image);
             imageBitmap = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image_poz_x, image_poz_y), wxSize(wxDefaultSize));
@@ -386,7 +395,7 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
     }
     if(imageBitmap == nullptr && volume_value >= 40 && volume_value < 70){
         wxImage image;
-        if(image.LoadFile("../dif2.png")){
+        if(image.LoadFile("../assets/dif2.png")){
             wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
             wxBitmap bitmap(image);
             imageBitmap = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image_poz_x, image_poz_y), wxSize(wxDefaultSize));
@@ -394,7 +403,7 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
     }
     if(imageBitmap == nullptr && volume_value > 0 && volume_value < 40){
         wxImage image;
-        if(image.LoadFile("../dif3.png")){
+        if(image.LoadFile("../assets/dif3.png")){
             wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
             wxBitmap bitmap(image);
             imageBitmap = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image_poz_x, image_poz_y), wxSize(wxDefaultSize));
@@ -402,7 +411,7 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
     }
     if(imageBitmap == nullptr && volume_value == 0){
         wxImage image;
-        if(image.LoadFile("../dif4.png")){
+        if(image.LoadFile("../assets/dif4.png")){
             wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
             wxBitmap bitmap(image);
             imageBitmap = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image_poz_x, image_poz_y), wxSize(wxDefaultSize));
@@ -410,7 +419,7 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
     }
     else if(imageBitmap2 == nullptr){
         wxImage image;
-        if(image.LoadFile("../mic1.png")){
+        if(image.LoadFile("../assets/mic1.png")){
             wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
             wxBitmap bitmap(image);
             imageBitmap2 = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image2_poz_x, image2_poz_y), wxSize(wxDefaultSize));
