@@ -49,5 +49,5 @@
         "streambuf": "cpp",
         "typeinfo": "cpp"
     },
-    "cmake.sourceDirectory": "/home/bogdan/Documents/Lizon/Lizon/src"
+    "cmake.sourceDirectory": "/home/bogdan/Documents/Lizon/Lizon"
 }

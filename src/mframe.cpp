@@ -11,6 +11,8 @@
 #include <string>
 #include <wx/icon.h>
 #include <vector>
+#include <wx/stdpaths.h>
+#include <wx/filename.h>
 #include "mframe.h"
 #include "main.h"
 
@@ -29,40 +31,64 @@ mainFrame::mainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, 
     wxInitAllImageHandlers();
 
     wxIcon lizon_icon;
-    lizon_icon.LoadFile("../assets/icon.ico", wxBITMAP_TYPE_ICO);
+    iconPath = wxStandardPaths::Get().GetExecutablePath();
+    iconPath = wxFileName(iconPath).GetPath(wxPATH_GET_SEPARATOR);
+    iconPath += "assets/icon.ico";
+
+    lizon_icon.LoadFile(iconPath, wxBITMAP_TYPE_ICO);
     SetIcon(lizon_icon);
 
     //imagini
     wxImage vsIcon;
-    if(vsIcon.LoadFile("../assets/vscode.png")){
+    iconPath = wxStandardPaths::Get().GetExecutablePath();
+    iconPath = wxFileName(iconPath).GetPath(wxPATH_GET_SEPARATOR);
+    iconPath += "assets/vscode.png";
+
+    if(vsIcon.LoadFile(iconPath, wxBITMAP_TYPE_PNG)){
         wxImage scaledImage = vsIcon.Rescale(25, 25, wxIMAGE_QUALITY_HIGH);
         wxBitmap bitmap(vsIcon);
         wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(10, 240), wxSize(wxDefaultSize));
     }
 
     wxImage konsole;
-    if(konsole.LoadFile("../assets/konsole.png")){
+    iconPath = wxStandardPaths::Get().GetExecutablePath();
+    iconPath = wxFileName(iconPath).GetPath(wxPATH_GET_SEPARATOR);
+    iconPath += "assets/konsole.png";
+
+    if(konsole.LoadFile(iconPath, wxBITMAP_TYPE_PNG)){
         wxImage scaledImage = konsole.Rescale(30, 30, wxIMAGE_QUALITY_HIGH);
         wxBitmap bitmap(konsole);
         wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(10, 280), wxSize(wxDefaultSize));
     }
 
     wxImage cpu_icon;
-    if(cpu_icon.LoadFile("../assets/cpu.png")){
+    iconPath = wxStandardPaths::Get().GetExecutablePath();
+    iconPath = wxFileName(iconPath).GetPath(wxPATH_GET_SEPARATOR);
+    iconPath += "assets/cpu.png";
+
+    if(cpu_icon.LoadFile(iconPath, wxBITMAP_TYPE_PNG)){
         wxImage scaledImage = cpu_icon.Rescale(100, 100, wxIMAGE_QUALITY_HIGH);
         wxBitmap bitmap(cpu_icon);
         wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(-20, 20), wxSize(wxDefaultSize));
     }
 
     wxImage temp_icon;
-    if(temp_icon.LoadFile("../assets/temp.png")){
+    iconPath = wxStandardPaths::Get().GetExecutablePath();
+    iconPath = wxFileName(iconPath).GetPath(wxPATH_GET_SEPARATOR);
+    iconPath += "assets/temp.png";
+
+    if(temp_icon.LoadFile(iconPath, wxBITMAP_TYPE_PNG)){
         wxImage scaledImage = temp_icon.Rescale(100, 100, wxIMAGE_QUALITY_HIGH);
         wxBitmap bitmap(temp_icon);
         wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(-20, 60), wxSize(wxDefaultSize));
     }
 
     wxImage ram_icon;
-    if(ram_icon.LoadFile("../assets/ram.png")){
+    iconPath = wxStandardPaths::Get().GetExecutablePath();
+    iconPath = wxFileName(iconPath).GetPath(wxPATH_GET_SEPARATOR);
+    iconPath += "assets/ram.png";
+
+    if(ram_icon.LoadFile(iconPath, wxBITMAP_TYPE_PNG)){
         wxImage scaledImage = ram_icon.Rescale(100, 100, wxIMAGE_QUALITY_HIGH);
         wxBitmap bitmap(ram_icon);
         wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(-20, 100), wxSize(wxDefaultSize));
@@ -387,7 +413,11 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
     
     if(imageBitmap == nullptr && volume_value >= 70){
         wxImage image;
-        if(image.LoadFile("../assets/dif1.png")){
+        iconPath = wxStandardPaths::Get().GetExecutablePath();
+        iconPath = wxFileName(iconPath).GetPath(wxPATH_GET_SEPARATOR);
+        iconPath += "assets/dif1.png";
+
+        if(image.LoadFile(iconPath, wxBITMAP_TYPE_PNG)){
             wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
             wxBitmap bitmap(image);
             imageBitmap = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image_poz_x, image_poz_y), wxSize(wxDefaultSize));
@@ -395,7 +425,11 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
     }
     if(imageBitmap == nullptr && volume_value >= 40 && volume_value < 70){
         wxImage image;
-        if(image.LoadFile("../assets/dif2.png")){
+        iconPath = wxStandardPaths::Get().GetExecutablePath();
+        iconPath = wxFileName(iconPath).GetPath(wxPATH_GET_SEPARATOR);
+        iconPath += "assets/dif2.png";
+
+        if(image.LoadFile(iconPath, wxBITMAP_TYPE_PNG)){
             wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
             wxBitmap bitmap(image);
             imageBitmap = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image_poz_x, image_poz_y), wxSize(wxDefaultSize));
@@ -403,7 +437,11 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
     }
     if(imageBitmap == nullptr && volume_value > 0 && volume_value < 40){
         wxImage image;
-        if(image.LoadFile("../assets/dif3.png")){
+        iconPath = wxStandardPaths::Get().GetExecutablePath();
+        iconPath = wxFileName(iconPath).GetPath(wxPATH_GET_SEPARATOR);
+        iconPath += "assets/dif3.png";
+
+        if(image.LoadFile(iconPath, wxBITMAP_TYPE_PNG)){
             wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
             wxBitmap bitmap(image);
             imageBitmap = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image_poz_x, image_poz_y), wxSize(wxDefaultSize));
@@ -411,7 +449,11 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
     }
     if(imageBitmap == nullptr && volume_value == 0){
         wxImage image;
-        if(image.LoadFile("../assets/dif4.png")){
+        iconPath = wxStandardPaths::Get().GetExecutablePath();
+        iconPath = wxFileName(iconPath).GetPath(wxPATH_GET_SEPARATOR);
+        iconPath += "assets/dif4.png";
+
+        if(image.LoadFile(iconPath, wxBITMAP_TYPE_PNG)){
             wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
             wxBitmap bitmap(image);
             imageBitmap = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image_poz_x, image_poz_y), wxSize(wxDefaultSize));
@@ -419,7 +461,11 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
     }
     else if(imageBitmap2 == nullptr){
         wxImage image;
-        if(image.LoadFile("../assets/mic1.png")){
+        iconPath = wxStandardPaths::Get().GetExecutablePath();
+        iconPath = wxFileName(iconPath).GetPath(wxPATH_GET_SEPARATOR);
+        iconPath += "assets/mic1.png";
+
+        if(image.LoadFile(iconPath, wxBITMAP_TYPE_PNG)){
             wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
             wxBitmap bitmap(image);
             imageBitmap2 = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image2_poz_x, image2_poz_y), wxSize(wxDefaultSize));

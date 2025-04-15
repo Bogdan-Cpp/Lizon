@@ -70,6 +70,8 @@ class mainFrame : public wxFrame{
 
     wxStaticBitmap *imageBitmap;
     wxStaticBitmap *imageBitmap2;
+
+    wxString iconPath;
     
     mainFrame(const wxString& title);
     
