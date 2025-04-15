@@ -16,16 +16,19 @@ class mainFrame : public wxFrame{
     int volume_size_x;
     int volume_poz_x;
     int volume_poz_y;
-
     int volume2_size_x;
     int volume2_poz_x;
     int volume2_poz_y;
 
     int text_poz_x;
     int text_poz_y;
+    int text2_poz_x;
+    int text2_poz_y;
 
     int image_poz_x;
     int image_poz_y;
+    int image2_poz_x;
+    int image2_poz_y;
     
     wxStaticText *timerText;
     wxStaticText *timerText2;
@@ -34,6 +37,7 @@ class mainFrame : public wxFrame{
     wxStaticText *ram_usage;
     wxStaticText *batery_procent;
     wxStaticText *volume_procent;
+    wxStaticText *volume_procent2;
 
     wxPanel *panel;
     wxPanel *cpu_draw;
@@ -52,17 +56,20 @@ class mainFrame : public wxFrame{
     wxString BATERY_NUMBER;
     wxString TOTAL_RAM;
     wxString CURRENT_VOLUME;
+    wxString CURRENT2_VOLUME;
 
     wxString remember_CPU;
     wxString remember_temp;
     wxString remember_ram;
     wxString remember_batery;
     wxString remember_volume;
+    wxString remember_volume2;
 
     wxSlider *volume;
     wxSlider *volume2;
 
     wxStaticBitmap *imageBitmap;
+    wxStaticBitmap *imageBitmap2;
     
     mainFrame(const wxString& title);
     

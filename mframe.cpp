@@ -64,6 +64,7 @@ mainFrame::mainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, 
     }
 
     imageBitmap = nullptr;
+    imageBitmap2 = nullptr;
     
     //time track
     timerText = new wxStaticText(panel, wxID_ANY, wxString::Format("%d m", timeSpent), wxPoint(360, 245));
@@ -78,6 +79,7 @@ mainFrame::mainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, 
     volume = nullptr;
     volume_procent = nullptr;
     volume2 = nullptr;
+    volume_procent2 = nullptr;
 
     timer.SetOwner(this);
     Bind(wxEVT_TIMER, &mainFrame::OnTimer, this);
@@ -114,7 +116,7 @@ mainFrame::mainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, 
 
 void mainFrame::volumeFunction2(wxCommandEvent &event){
     std::string volume_command = "pactl set-source-volume @DEFAULT_SOURCE@ ";
-    int value = volume->GetValue();
+    int value = volume2->GetValue();
 
     std::string string_value = std::to_string(value);
     volume_command = volume_command + string_value + "%";
@@ -181,7 +183,7 @@ void mainFrame::draw(wxPaintEvent &event){
         double total_ram;
         TOTAL_RAM.ToDouble(&total_ram);
         remember_ram.ToDouble(&ram_value);
-        dc.DrawRectangle(0, 0, ((ram_value + 1) / 10) * 300, 20);
+        dc.DrawRectangle(0, 0, ((ram_value + 1) / total_ram) * 300, 20);
     }
     else if(source == batery_draw && isBatery){
         double batery_value;
@@ -209,7 +211,7 @@ void mainFrame::draw(wxPaintEvent &event){
         }
 
         //dc.DrawRectangle(0, 0, batery_value / 2, 15);
-        dc.DrawRoundedRectangle(0, 0, batery_value / 2, 15, 1);
+        dc.DrawRoundedRectangle(0, 0, batery_value / 2, 20, 1);
     }
 }
 
@@ -237,10 +239,12 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
     const char *cmd_number_batery = "cat /sys/class/power_supply/BAT0/capacity";
     const char *cmd_cpu_temp = "sensors | grep 'Core 0' | awk '{print $3}' | tr -d '+°C'";
     const char *cmd_cpu = "top -bn1 | grep \"Cpu(s)\" | awk '{print $2 + $4}'";
-    const char *cmd_ram = "free -h | awk '/Mem:/ {gsub(/[A-Za-z]/, \"\", $3); print $3}'";    const char *command = "xdotool search --name \"Visual Studio Code\"";
+    const char *cmd_ram = "free -h | awk '/Mem:/ {gsub(/[A-Za-z]/, \"\", $3); print $3}'";    
+    const char *command = "xdotool search --name \"Visual Studio Code\"";
     const char *command2 = "xdotool search --name \"Konsole\"";
     const char *cmd_total_ram = "free -g | awk '/Mem:/ {print $2}'";
-    const char* cmd_current_volume = "pactl get-sink-volume @DEFAULT_SINK@ | grep -oP \"\\d+(?=%)\" | head -1";
+    const char *cmd_current_volume = "pactl get-sink-volume @DEFAULT_SINK@ | grep -oP \"\\d+(?=%)\" | head -1";
+    const char *cmd_current_volume2 = "pactl get-source-volume @DEFAULT_SOURCE@ | grep -oP \"\\d+(?=%)\" | head -1";
     int rezults = system(command);
     int rezults2 = system(command2);
     char read_cpu_temp[128];
@@ -252,6 +256,9 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
     char read_gpu[128];
     char read_number_gpu[128];
     char read_current_volume[128];
+    char read_current_volume2[128];
+    char read_charging[128];
+
     //read the current volume
     std::unique_ptr<FILE, decltype(&pclose)> current_volume_pipe(popen(cmd_current_volume, "r"), pclose); 
     if(!current_volume_pipe){return;}
@@ -259,7 +266,14 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
     while(fgets(read_current_volume, sizeof(read_current_volume), current_volume_pipe.get()) != nullptr){
         CURRENT_VOLUME += read_current_volume;
     }
- 
+    
+    std::unique_ptr<FILE, decltype(&pclose)> current_volume_pipe2(popen(cmd_current_volume2, "r"), pclose); 
+    if(!current_volume_pipe2){return;}
+
+    while(fgets(read_current_volume2, sizeof(read_current_volume2), current_volume_pipe2.get()) != nullptr){
+        CURRENT2_VOLUME += read_current_volume2;
+    }
+    
     //batery status
     std::unique_ptr<FILE, decltype(&pclose)> batery_pipe(popen(cmd_batery, "r"), pclose); 
     if(!batery_pipe){return;}
@@ -273,7 +287,6 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
         volume_size_x = 300;
         volume_poz_x = 50;
         volume_poz_y = 350;
-
         volume2_size_x = 300;
         volume2_poz_x = 50;
         volume2_poz_y = 400;
@@ -286,14 +299,27 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
     }
     else{
         isBatery = true;
-        volume2_size_x = 300;
-        volume2_poz_x = 50;
-        volume2_poz_y = 450;
+        volume_size_x = 150;
+        volume_poz_x = 210;
+        volume_poz_y = 350;
+        volume2_size_x = 150;
+        volume2_poz_x = 210;
+        volume2_poz_y = 400;
+
+        text_poz_x = 370;
+        text_poz_y = 355;
+        text2_poz_x = 370;
+        text2_poz_y = 405;
+
+        image_poz_x = 120;
+        image_poz_y = 290;
+        image2_poz_x = 120;
+        image2_poz_y = 340;
         
         if(isBatery && batery_draw == nullptr){
-            batery_procent = new wxStaticText(panel, wxID_ANY, wxString::Format("%s", BATERY), wxPoint(61, 417));
+            batery_procent = new wxStaticText(panel, wxID_ANY, wxString::Format("%s", BATERY), wxPoint(61, 405));
     
-            batery_draw = new wxPanel(panel, wxID_ANY, wxPoint(50, 400), wxSize(50, 15));
+            batery_draw = new wxPanel(panel, wxID_ANY, wxPoint(50, 383), wxSize(50, 20));
             batery_draw->SetBackgroundColour(wxColor(50, 50, 50));
             batery_draw->Bind(wxEVT_PAINT, &mainFrame::draw, this);
         }
@@ -301,7 +327,7 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
             batery_procent->SetLabel(wxString::Format("%s", BATERY));
             BATERY = "";
         }
-        
+
         std::unique_ptr<FILE, decltype(&pclose)> batery_number_pipe(popen(cmd_number_batery, "r"), pclose); 
         if(!batery_number_pipe){return;}
     
@@ -318,26 +344,38 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
     //volume
     double volume_value;
     double temp_volume;
+    double volume_value2;
+    double temp_volume2;
+
     temp_volume = volume_value;
     CURRENT_VOLUME.ToDouble(&volume_value);
     remember_volume = CURRENT_VOLUME;
+
+    temp_volume2 = volume_value2;
+    CURRENT2_VOLUME.ToDouble(&volume_value2);
+    remember_volume2 = CURRENT2_VOLUME;
 
     if(volume_value != temp_volume && imageBitmap != nullptr){
         imageBitmap->Destroy();
         imageBitmap = nullptr;
     }
        
-    if(volume == nullptr && volume_procent == nullptr && volume2 == nullptr){
+    if(volume == nullptr && volume_procent == nullptr && volume2 == nullptr && volume_procent2 == nullptr){
         volume = new wxSlider(panel, wxID_ANY, volume_value, 0, 100, wxPoint(volume_poz_x, volume_poz_y), wxSize(volume_size_x, -1));
-        volume2 = new wxSlider(panel, wxID_ANY, 0, 0, 100, wxPoint(volume2_poz_x, volume2_poz_y), wxSize(volume2_size_x, -1));
+        volume2 = new wxSlider(panel, wxID_ANY, volume_value2, 0, 100, wxPoint(volume2_poz_x, volume2_poz_y), wxSize(volume2_size_x, -1));
         volume_procent = new wxStaticText(panel, wxID_ANY, CURRENT_VOLUME, wxPoint(text_poz_x, text_poz_y));
+        volume_procent2 = new wxStaticText(panel, wxID_ANY, CURRENT2_VOLUME, wxPoint(text2_poz_x, text2_poz_y));
             
         volume->Bind(wxEVT_SLIDER, &mainFrame::volumeFunction, this);
         volume2->Bind(wxEVT_SLIDER, &mainFrame::volumeFunction2, this);
     }
     if(volume_procent != nullptr){volume_procent->SetLabel(wxString::Format(CURRENT_VOLUME));}
-    CURRENT_VOLUME = "";
+    if(volume_procent2 != nullptr){volume_procent2->SetLabel(wxString::Format(CURRENT2_VOLUME));}
 
+    CURRENT_VOLUME = "";
+    CURRENT2_VOLUME = "";
+
+    
     if(imageBitmap == nullptr && volume_value >= 70){
         wxImage image;
         if(image.LoadFile("../dif1.png")){
@@ -368,6 +406,14 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
             wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
             wxBitmap bitmap(image);
             imageBitmap = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image_poz_x, image_poz_y), wxSize(wxDefaultSize));
+        }
+    }
+    else if(imageBitmap2 == nullptr){
+        wxImage image;
+        if(image.LoadFile("../mic1.png")){
+            wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
+            wxBitmap bitmap(image);
+            imageBitmap2 = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image2_poz_x, image2_poz_y), wxSize(wxDefaultSize));
         }
     }
     
