@@ -5,6 +5,6 @@ find_package(wxWidgets REQUIRED COMPONENTS core base)
 
 include(${wxWidgets_USE_FILE})
 
-add_executable(Lizon mframe.cpp main.cpp)
+add_executable(Lizon ../src/mframe.cpp ../src/main.cpp)
 
 target_link_libraries(Lizon ${wxWidgets_LIBRARIES})
