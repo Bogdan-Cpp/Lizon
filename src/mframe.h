@@ -71,6 +71,11 @@ class mainFrame : public wxFrame{
     wxStaticBitmap *imageBitmap;
     wxStaticBitmap *imageBitmap2;
 
+    wxString dev_path;
+    wxString release_path;
+    wxString execPath;
+    wxString execDir;
+    
     wxString iconPath;
     
     mainFrame(const wxString& title);

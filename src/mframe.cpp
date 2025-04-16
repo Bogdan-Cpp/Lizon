@@ -29,70 +29,139 @@ mainFrame::mainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, 
     panel = new wxPanel(this, wxID_ANY);
 
     wxInitAllImageHandlers();
-
+    
+    //app icon
+    execPath = wxStandardPaths::Get().GetExecutablePath(); 
+    execDir = wxFileName(execPath).GetPath(wxPATH_GET_SEPARATOR);     
+   
+    release_path = execDir + "../share/icon.ico";
+    dev_path = execDir + "../assets/icon.ico";
+    
     wxIcon lizon_icon;
-    iconPath = wxStandardPaths::Get().GetExecutablePath();
-    iconPath = wxFileName(iconPath).GetPath(wxPATH_GET_SEPARATOR);
-    iconPath += "assets/icon.ico";
-
-    lizon_icon.LoadFile(iconPath, wxBITMAP_TYPE_ICO);
+    if (wxFileExists(release_path)) {lizon_icon.LoadFile(release_path, wxBITMAP_TYPE_ICO);} 
+    else if (wxFileExists(dev_path)) {lizon_icon.LoadFile(dev_path, wxBITMAP_TYPE_ICO);} 
+    else {return;}
     SetIcon(lizon_icon);
 
-    //imagini
+    //vscode
     wxImage vsIcon;
-    iconPath = wxStandardPaths::Get().GetExecutablePath();
-    iconPath = wxFileName(iconPath).GetPath(wxPATH_GET_SEPARATOR);
-    iconPath += "assets/vscode.png";
-
-    if(vsIcon.LoadFile(iconPath, wxBITMAP_TYPE_PNG)){
-        wxImage scaledImage = vsIcon.Rescale(25, 25, wxIMAGE_QUALITY_HIGH);
-        wxBitmap bitmap(vsIcon);
-        wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(10, 240), wxSize(wxDefaultSize));
-    }
-
+    execPath = wxStandardPaths::Get().GetExecutablePath(); 
+    execDir = wxFileName(execPath).GetPath(wxPATH_GET_SEPARATOR);     
+   
+    release_path = execDir + "../share/vscode.png";
+    dev_path = execDir + "../assets/vscode.png";
+    
+    if (wxFileExists(release_path)) {
+        if(vsIcon.LoadFile(release_path, wxBITMAP_TYPE_PNG)){
+            wxImage scaledImage = vsIcon.Rescale(25, 25, wxIMAGE_QUALITY_HIGH);
+            wxBitmap bitmap(vsIcon);
+            wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(10, 240), wxSize(wxDefaultSize));
+        }
+    } 
+    else if (wxFileExists(dev_path)) {
+        if(vsIcon.LoadFile(dev_path, wxBITMAP_TYPE_PNG)){
+            wxImage scaledImage = vsIcon.Rescale(25, 25, wxIMAGE_QUALITY_HIGH);
+            wxBitmap bitmap(vsIcon);
+            wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(10, 240), wxSize(wxDefaultSize));
+        }
+    } 
+    else {return;}
+    
+    //konsole
     wxImage konsole;
-    iconPath = wxStandardPaths::Get().GetExecutablePath();
-    iconPath = wxFileName(iconPath).GetPath(wxPATH_GET_SEPARATOR);
-    iconPath += "assets/konsole.png";
+    execPath = wxStandardPaths::Get().GetExecutablePath(); 
+    execDir = wxFileName(execPath).GetPath(wxPATH_GET_SEPARATOR);     
+   
+    release_path = execDir + "../share/konsole.png";
+    dev_path = execDir + "../assets/konsole.png";
 
-    if(konsole.LoadFile(iconPath, wxBITMAP_TYPE_PNG)){
-        wxImage scaledImage = konsole.Rescale(30, 30, wxIMAGE_QUALITY_HIGH);
-        wxBitmap bitmap(konsole);
-        wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(10, 280), wxSize(wxDefaultSize));
-    }
-
+    if (wxFileExists(release_path)) {
+        if(konsole.LoadFile(release_path, wxBITMAP_TYPE_PNG)){
+            wxImage scaledImage = konsole.Rescale(30, 30, wxIMAGE_QUALITY_HIGH);
+            wxBitmap bitmap(konsole);
+            wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(10, 280), wxSize(wxDefaultSize));
+        }
+    } 
+    else if (wxFileExists(dev_path)) {
+        if(konsole.LoadFile(dev_path, wxBITMAP_TYPE_PNG)){
+            wxImage scaledImage = konsole.Rescale(30, 30, wxIMAGE_QUALITY_HIGH);
+            wxBitmap bitmap(konsole);
+            wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(10, 280), wxSize(wxDefaultSize));
+        }
+    } 
+    else {return;}
+    
+    //cpu
     wxImage cpu_icon;
-    iconPath = wxStandardPaths::Get().GetExecutablePath();
-    iconPath = wxFileName(iconPath).GetPath(wxPATH_GET_SEPARATOR);
-    iconPath += "assets/cpu.png";
-
-    if(cpu_icon.LoadFile(iconPath, wxBITMAP_TYPE_PNG)){
-        wxImage scaledImage = cpu_icon.Rescale(100, 100, wxIMAGE_QUALITY_HIGH);
-        wxBitmap bitmap(cpu_icon);
-        wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(-20, 20), wxSize(wxDefaultSize));
-    }
-
+    execPath = wxStandardPaths::Get().GetExecutablePath(); 
+    execDir = wxFileName(execPath).GetPath(wxPATH_GET_SEPARATOR);     
+   
+    release_path = execDir + "../share/cpu.png";
+    dev_path = execDir + "../assets/cpu.png";
+    
+    if (wxFileExists(release_path)) {
+        if(cpu_icon.LoadFile(release_path, wxBITMAP_TYPE_PNG)){
+            wxImage scaledImage = cpu_icon.Rescale(100, 100, wxIMAGE_QUALITY_HIGH);
+            wxBitmap bitmap(cpu_icon);
+            wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(-20, 20), wxSize(wxDefaultSize));
+        }
+    } 
+    else if (wxFileExists(dev_path)) {
+        if(cpu_icon.LoadFile(dev_path, wxBITMAP_TYPE_PNG)){
+            wxImage scaledImage = cpu_icon.Rescale(100, 100, wxIMAGE_QUALITY_HIGH);
+            wxBitmap bitmap(cpu_icon);
+            wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(-20, 20), wxSize(wxDefaultSize));
+        }
+    } 
+    else {return;}
+    
+    //cpu temp
     wxImage temp_icon;
-    iconPath = wxStandardPaths::Get().GetExecutablePath();
-    iconPath = wxFileName(iconPath).GetPath(wxPATH_GET_SEPARATOR);
-    iconPath += "assets/temp.png";
+    execPath = wxStandardPaths::Get().GetExecutablePath(); 
+    execDir = wxFileName(execPath).GetPath(wxPATH_GET_SEPARATOR);     
+   
+    release_path = execDir + "../share/temp.png";
+    dev_path = execDir + "../assets/temp.png";
 
-    if(temp_icon.LoadFile(iconPath, wxBITMAP_TYPE_PNG)){
-        wxImage scaledImage = temp_icon.Rescale(100, 100, wxIMAGE_QUALITY_HIGH);
-        wxBitmap bitmap(temp_icon);
-        wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(-20, 60), wxSize(wxDefaultSize));
-    }
-
+    if (wxFileExists(release_path)) {
+        if(temp_icon.LoadFile(release_path, wxBITMAP_TYPE_PNG)){
+            wxImage scaledImage = temp_icon.Rescale(100, 100, wxIMAGE_QUALITY_HIGH);
+            wxBitmap bitmap(temp_icon);
+            wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(-20, 60), wxSize(wxDefaultSize));
+        }
+    } 
+    else if (wxFileExists(dev_path)) {
+        if(temp_icon.LoadFile(dev_path, wxBITMAP_TYPE_PNG)){
+            wxImage scaledImage = temp_icon.Rescale(100, 100, wxIMAGE_QUALITY_HIGH);
+            wxBitmap bitmap(temp_icon);
+            wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(-20, 60), wxSize(wxDefaultSize));
+        }
+    } 
+    else {return;}
+    
+    //ram
     wxImage ram_icon;
-    iconPath = wxStandardPaths::Get().GetExecutablePath();
-    iconPath = wxFileName(iconPath).GetPath(wxPATH_GET_SEPARATOR);
-    iconPath += "assets/ram.png";
-
-    if(ram_icon.LoadFile(iconPath, wxBITMAP_TYPE_PNG)){
-        wxImage scaledImage = ram_icon.Rescale(100, 100, wxIMAGE_QUALITY_HIGH);
-        wxBitmap bitmap(ram_icon);
-        wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(-20, 100), wxSize(wxDefaultSize));
-    }
+    execPath = wxStandardPaths::Get().GetExecutablePath(); 
+    execDir = wxFileName(execPath).GetPath(wxPATH_GET_SEPARATOR);     
+   
+    release_path = execDir + "../share/ram.png";
+    dev_path = execDir + "../assets/ram.png";
+    
+    if (wxFileExists(release_path)) {
+        if(ram_icon.LoadFile(release_path, wxBITMAP_TYPE_PNG)){
+            wxImage scaledImage = ram_icon.Rescale(100, 100, wxIMAGE_QUALITY_HIGH);
+            wxBitmap bitmap(ram_icon);
+            wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(-20, 100), wxSize(wxDefaultSize));
+        }
+    } 
+    else if (wxFileExists(dev_path)) {
+        if(ram_icon.LoadFile(dev_path, wxBITMAP_TYPE_PNG)){
+            wxImage scaledImage = ram_icon.Rescale(100, 100, wxIMAGE_QUALITY_HIGH);
+            wxBitmap bitmap(ram_icon);
+            wxStaticBitmap *bitmapControl = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(-20, 100), wxSize(wxDefaultSize));
+        }
+    } 
+    else {return;}
 
     imageBitmap = nullptr;
     imageBitmap2 = nullptr;
@@ -410,66 +479,134 @@ void mainFrame::OnTimer(wxTimerEvent& event) {
     CURRENT_VOLUME = "";
     CURRENT2_VOLUME = "";
 
-    
+    //speaker1
     if(imageBitmap == nullptr && volume_value >= 70){
         wxImage image;
-        iconPath = wxStandardPaths::Get().GetExecutablePath();
-        iconPath = wxFileName(iconPath).GetPath(wxPATH_GET_SEPARATOR);
-        iconPath += "assets/dif1.png";
-
-        if(image.LoadFile(iconPath, wxBITMAP_TYPE_PNG)){
-            wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
-            wxBitmap bitmap(image);
-            imageBitmap = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image_poz_x, image_poz_y), wxSize(wxDefaultSize));
-        }
+        execPath = wxStandardPaths::Get().GetExecutablePath(); 
+        execDir = wxFileName(execPath).GetPath(wxPATH_GET_SEPARATOR);     
+   
+        release_path = execDir + "../share/dif1.png";
+        dev_path = execDir + "../assets/dif1.png";
+        
+        if (wxFileExists(release_path)) {
+            if(image.LoadFile(release_path, wxBITMAP_TYPE_PNG)){
+                wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
+                wxBitmap bitmap(image);
+                imageBitmap = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image_poz_x, image_poz_y), wxSize(wxDefaultSize));
+            }
+        } 
+        else if (wxFileExists(dev_path)) {
+            if(image.LoadFile(dev_path, wxBITMAP_TYPE_PNG)){
+                wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
+                wxBitmap bitmap(image);
+                imageBitmap = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image_poz_x, image_poz_y), wxSize(wxDefaultSize));
+            }
+        } 
+        else {return;}
     }
+
+    //speaker2
     if(imageBitmap == nullptr && volume_value >= 40 && volume_value < 70){
         wxImage image;
-        iconPath = wxStandardPaths::Get().GetExecutablePath();
-        iconPath = wxFileName(iconPath).GetPath(wxPATH_GET_SEPARATOR);
-        iconPath += "assets/dif2.png";
+        execPath = wxStandardPaths::Get().GetExecutablePath(); 
+        execDir = wxFileName(execPath).GetPath(wxPATH_GET_SEPARATOR);     
+   
+        release_path = execDir + "../share/dif2.png";
+        dev_path = execDir + "../assets/dif2.png";
 
-        if(image.LoadFile(iconPath, wxBITMAP_TYPE_PNG)){
-            wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
-            wxBitmap bitmap(image);
-            imageBitmap = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image_poz_x, image_poz_y), wxSize(wxDefaultSize));
-        }
+        if(wxFileExists(release_path)) {
+            if(image.LoadFile(release_path, wxBITMAP_TYPE_PNG)){
+                wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
+                wxBitmap bitmap(image);
+                imageBitmap = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image_poz_x, image_poz_y), wxSize(wxDefaultSize));
+            }
+        } 
+        else if (wxFileExists(dev_path)) {
+            if(image.LoadFile(dev_path, wxBITMAP_TYPE_PNG)){
+                wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
+                wxBitmap bitmap(image);
+                imageBitmap = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image_poz_x, image_poz_y), wxSize(wxDefaultSize));
+            }
+        } 
+        else {return;}
     }
+
+    //speaker3
     if(imageBitmap == nullptr && volume_value > 0 && volume_value < 40){
         wxImage image;
-        iconPath = wxStandardPaths::Get().GetExecutablePath();
-        iconPath = wxFileName(iconPath).GetPath(wxPATH_GET_SEPARATOR);
-        iconPath += "assets/dif3.png";
-
-        if(image.LoadFile(iconPath, wxBITMAP_TYPE_PNG)){
-            wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
-            wxBitmap bitmap(image);
-            imageBitmap = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image_poz_x, image_poz_y), wxSize(wxDefaultSize));
-        }
+        execPath = wxStandardPaths::Get().GetExecutablePath(); 
+        execDir = wxFileName(execPath).GetPath(wxPATH_GET_SEPARATOR);     
+   
+        release_path = execDir + "../share/dif3.png";
+        dev_path = execDir + "../assets/dif3.png";
+        
+        if (wxFileExists(release_path)) {
+            if(image.LoadFile(release_path, wxBITMAP_TYPE_PNG)){
+                wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
+                wxBitmap bitmap(image);
+                imageBitmap = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image_poz_x, image_poz_y), wxSize(wxDefaultSize));
+            }
+        } 
+        else if (wxFileExists(dev_path)) {
+            if(image.LoadFile(dev_path, wxBITMAP_TYPE_PNG)){
+                wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
+                wxBitmap bitmap(image);
+                imageBitmap = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image_poz_x, image_poz_y), wxSize(wxDefaultSize));
+            }
+        } 
+        else {return;}
     }
+
+    //speaker4
     if(imageBitmap == nullptr && volume_value == 0){
         wxImage image;
-        iconPath = wxStandardPaths::Get().GetExecutablePath();
-        iconPath = wxFileName(iconPath).GetPath(wxPATH_GET_SEPARATOR);
-        iconPath += "assets/dif4.png";
+        execPath = wxStandardPaths::Get().GetExecutablePath(); 
+        execDir = wxFileName(execPath).GetPath(wxPATH_GET_SEPARATOR);     
+   
+        release_path = execDir + "../share/dif4.png";
+        dev_path = execDir + "../assets/dif4.png";
 
-        if(image.LoadFile(iconPath, wxBITMAP_TYPE_PNG)){
-            wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
-            wxBitmap bitmap(image);
-            imageBitmap = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image_poz_x, image_poz_y), wxSize(wxDefaultSize));
-        }
+        if (wxFileExists(release_path)) {
+            if(image.LoadFile(release_path, wxBITMAP_TYPE_PNG)){
+                wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
+                wxBitmap bitmap(image);
+                imageBitmap = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image_poz_x, image_poz_y), wxSize(wxDefaultSize));
+            }
+        } 
+        else if (wxFileExists(dev_path)) {
+            if(image.LoadFile(iconPath, wxBITMAP_TYPE_PNG)){
+                wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
+                wxBitmap bitmap(image);
+                imageBitmap = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image_poz_x, image_poz_y), wxSize(wxDefaultSize));
+            }
+        } 
+        else {return;}
     }
+
+    //microfon
     else if(imageBitmap2 == nullptr){
         wxImage image;
-        iconPath = wxStandardPaths::Get().GetExecutablePath();
-        iconPath = wxFileName(iconPath).GetPath(wxPATH_GET_SEPARATOR);
-        iconPath += "assets/mic1.png";
+        execPath = wxStandardPaths::Get().GetExecutablePath(); 
+        execDir = wxFileName(execPath).GetPath(wxPATH_GET_SEPARATOR);     
+   
+        release_path = execDir + "../share/mic1.png";
+        dev_path = execDir + "../assets/mic1.png";
 
-        if(image.LoadFile(iconPath, wxBITMAP_TYPE_PNG)){
-            wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
-            wxBitmap bitmap(image);
-            imageBitmap2 = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image2_poz_x, image2_poz_y), wxSize(wxDefaultSize));
-        }
+        if (wxFileExists(release_path)) {
+            if(image.LoadFile(release_path, wxBITMAP_TYPE_PNG)){
+                wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
+                wxBitmap bitmap(image);
+                imageBitmap2 = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image2_poz_x, image2_poz_y), wxSize(wxDefaultSize));
+            }
+        } 
+        else if (wxFileExists(dev_path)) {
+            if(image.LoadFile(dev_path, wxBITMAP_TYPE_PNG)){
+                wxImage scaledImage = image.Rescale(150, 150, wxIMAGE_QUALITY_HIGH);
+                wxBitmap bitmap(image);
+                imageBitmap2 = new wxStaticBitmap(panel, wxID_ANY, bitmap, wxPoint(image2_poz_x, image2_poz_y), wxSize(wxDefaultSize));
+            }
+        } 
+        else {return;}
     }
     
     //RAM usage
